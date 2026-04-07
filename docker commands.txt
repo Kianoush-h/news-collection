@@ -1,0 +1,10 @@
+docker build -t crisis-landingpage .
+az login
+
+
+
+az acr login --name fe0ui0dev
+docker tag crisis-landingpage fe0ui0dev.azurecr.io/crisis-landingpage:latest
+docker push fe0ui0dev.azurecr.io/crisis-landingpage:latest
+
+
