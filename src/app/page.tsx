@@ -5,13 +5,38 @@ import NewsTicker from "@/components/NewsTicker";
 import LiveChart from "@/components/LiveChart";
 import { IconTarget, IconOil, IconBlock, IconGas, IconShip, IconTrendUp, IconMap } from "@/components/Icons";
 import ShareButton from "@/components/ShareButton";
-import { generateOilPriceHistory, generateGasPriceHistory } from "@/lib/mock-data";
-import { useClientData } from "@/hooks/useClientData";
+import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import Link from "next/link";
 
+interface PricesData {
+  oil: { brent: { price: number; change: number; changePct: number }; wti: { price: number } };
+  gasoline: { price: number; change: number };
+  updatedAt: string;
+}
+
+interface MetaData {
+  dayOfConflict: number;
+  conflictStartDate: string;
+  straitStatus: { status: string };
+  dayOfBlockade: number;
+}
+
+interface HistoryData {
+  data: { time: string; value: number }[];
+}
+
 export default function Home() {
-  const oilData = useClientData(generateOilPriceHistory);
-  const gasData = useClientData(generateGasPriceHistory);
+  const { data: prices } = useLiveData<PricesData>("/api/prices", 60000);
+  const { data: meta } = useLiveData<MetaData>("/api/meta", 3600000);
+  const { data: oilHistory } = useFetchOnce<HistoryData>("/api/history?symbol=BZ=F&days=60");
+  const { data: gasHistory } = useFetchOnce<HistoryData>("/api/history?symbol=RB=F&days=60");
+
+  const fmt = (v: number | undefined, prefix = "$") =>
+    v != null ? `${prefix}${v.toFixed(2)}` : "—";
+  const fmtChg = (v: number | undefined, pct: number | undefined) =>
+    v != null && pct != null
+      ? `${v >= 0 ? "+" : ""}$${v.toFixed(2)} (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%) today`
+      : "";
 
   return (
     <div className="space-y-6 animate-slide-in">
@@ -51,32 +76,32 @@ export default function Home() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Day of Conflict"
-          value="38"
+          value={meta ? `${meta.dayOfConflict}` : "—"}
           icon={<IconTarget className="w-4 h-4" />}
-          subtext="Started Feb 28, 2026"
+          subtext={meta ? `Started ${meta.conflictStartDate}` : ""}
           accentColor="red"
         />
         <StatCard
           label="Brent Crude"
-          value="$142.38"
-          change="+$3.24 (+2.3%) today"
-          changeType="up"
+          value={fmt(prices?.oil.brent.price)}
+          change={fmtChg(prices?.oil.brent.change, prices?.oil.brent.changePct)}
+          changeType={prices?.oil.brent.change != null ? (prices.oil.brent.change >= 0 ? "up" : "down") : "neutral"}
           icon={<IconOil className="w-4 h-4" />}
           accentColor="amber"
         />
         <StatCard
           label="Strait Status"
-          value="CLOSED"
-          change="Day 36 of blockade"
+          value={meta?.straitStatus.status ?? "—"}
+          change={meta ? `Day ${meta.dayOfBlockade} of blockade` : ""}
           changeType="up"
           icon={<IconBlock className="w-4 h-4" />}
           accentColor="red"
         />
         <StatCard
-          label="US Gas Average"
-          value="$5.89"
-          change="+$0.12 today"
-          changeType="up"
+          label="Gasoline Futures"
+          value={fmt(prices?.gasoline.price)}
+          change={prices?.gasoline.change != null ? `${prices.gasoline.change >= 0 ? "+" : ""}$${prices.gasoline.change.toFixed(2)} today` : ""}
+          changeType={prices?.gasoline.change != null ? (prices.gasoline.change >= 0 ? "up" : "down") : "neutral"}
           icon={<IconGas className="w-4 h-4" />}
           accentColor="amber"
         />
@@ -85,26 +110,22 @@ export default function Home() {
       {/* Charts + News */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3 space-y-6">
-          {oilData && (
-            <LiveChart
-              data={oilData}
-              title="Brent Crude Oil"
-              subtitle="Price per barrel since Feb 20"
-              color="#ff3b3b"
-              unit="$"
-              height={260}
-            />
-          )}
-          {gasData && (
-            <LiveChart
-              data={gasData}
-              title="US Average Gas Price"
-              subtitle="Price per gallon"
-              color="#ffb800"
-              unit="$"
-              height={200}
-            />
-          )}
+          <LiveChart
+            data={oilHistory?.data ?? []}
+            title="Brent Crude Oil"
+            subtitle="Price per barrel — 60 day history"
+            color="#ff3b3b"
+            unit="$"
+            height={260}
+          />
+          <LiveChart
+            data={gasHistory?.data ?? []}
+            title="RBOB Gasoline Futures"
+            subtitle="Price per gallon"
+            color="#ffb800"
+            unit="$"
+            height={200}
+          />
         </div>
         <div className="lg:col-span-2">
           <NewsTicker />
@@ -178,7 +199,6 @@ function QuickNav({
         <div className="text-sm font-semibold text-foreground">{title}</div>
         <div className="text-[11px] text-muted mt-0.5">{subtitle}</div>
       </div>
-      {/* Arrow */}
       <svg className="absolute top-4 right-4 w-4 h-4 text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path d="M5 12h14M12 5l7 7-7 7" />
       </svg>

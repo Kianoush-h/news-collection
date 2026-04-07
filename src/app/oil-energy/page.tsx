@@ -4,18 +4,40 @@ import StatCard from "@/components/StatCard";
 import LiveChart from "@/components/LiveChart";
 import { IconOil, IconFlame, IconGold } from "@/components/Icons";
 import ShareButton from "@/components/ShareButton";
-import { useClientData } from "@/hooks/useClientData";
-import {
-  generateOilPriceHistory,
-  generateStockData,
-  energyStocks,
-  commodityPrices,
-} from "@/lib/mock-data";
+import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
+
+interface PricesData {
+  oil: { brent: { price: number; change: number; changePct: number }; wti: { price: number; change: number; changePct: number } };
+  naturalGas: { price: number; change: number; changePct: number };
+  gold: { price: number; change: number; changePct: number };
+  wheat: { price: number; change: number; changePct: number };
+  copper: { price: number; change: number; changePct: number };
+  silver: { price: number; change: number; changePct: number };
+  stocks: { name: string; ticker: string; price: number; change: number; changePct: number }[];
+}
+
+interface MetaData {
+  shippingRoutes: { label: string; value: string; sub: string; color: string; textColor: string }[];
+}
+
+interface HistoryData {
+  data: { time: string; value: number }[];
+}
 
 export default function OilEnergyPage() {
-  const oilData = useClientData(generateOilPriceHistory);
-  const natGasData = useClientData(() => generateStockData(4.3, 0.2));
-  const goldData = useClientData(() => generateStockData(2833, 15));
+  const { data: prices } = useLiveData<PricesData>("/api/prices", 60000);
+  const { data: meta } = useLiveData<MetaData>("/api/meta", 3600000);
+  const { data: oilHistory } = useFetchOnce<HistoryData>("/api/history?symbol=BZ=F&days=60");
+  const { data: gasHistory } = useFetchOnce<HistoryData>("/api/history?symbol=NG=F&days=60");
+  const { data: goldHistory } = useFetchOnce<HistoryData>("/api/history?symbol=GC=F&days=60");
+
+  const fmt = (v: number | undefined, prefix = "$") =>
+    v != null ? `${prefix}${v.toFixed(2)}` : "—";
+  const fmtChg = (v: number | undefined, pct: number | undefined) =>
+    v != null && pct != null
+      ? `${v >= 0 ? "+" : ""}$${v.toFixed(2)} (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%)`
+      : "";
+  const dir = (v: number | undefined) => (v != null ? (v >= 0 ? "up" : "down") : "neutral") as "up" | "down" | "neutral";
 
   return (
     <div className="space-y-6 animate-slide-in">
@@ -35,34 +57,33 @@ export default function OilEnergyPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Brent Crude"
-          value="$142.38"
-          change="+$3.24 (+2.3%)"
-          changeType="up"
+          value={fmt(prices?.oil.brent.price)}
+          change={fmtChg(prices?.oil.brent.change, prices?.oil.brent.changePct)}
+          changeType={dir(prices?.oil.brent.change)}
           icon={<IconOil className="w-4 h-4" />}
-          subtext="Highest since 2008"
           accentColor="red"
         />
         <StatCard
           label="WTI Crude"
-          value="$138.92"
-          change="+$2.87 (+2.1%)"
-          changeType="up"
+          value={fmt(prices?.oil.wti.price)}
+          change={fmtChg(prices?.oil.wti.change, prices?.oil.wti.changePct)}
+          changeType={dir(prices?.oil.wti.change)}
           icon={<IconOil className="w-4 h-4" />}
           accentColor="amber"
         />
         <StatCard
           label="Natural Gas"
-          value="$8.45"
-          change="+$0.34 (+4.2%)"
-          changeType="up"
+          value={fmt(prices?.naturalGas.price)}
+          change={fmtChg(prices?.naturalGas.change, prices?.naturalGas.changePct)}
+          changeType={dir(prices?.naturalGas.change)}
           icon={<IconFlame className="w-4 h-4" />}
           accentColor="green"
         />
         <StatCard
           label="Gold"
-          value="$3,245"
-          change="+$28 (+0.9%)"
-          changeType="up"
+          value={prices?.gold.price != null ? `$${Math.round(prices.gold.price).toLocaleString()}` : "—"}
+          change={fmtChg(prices?.gold.change, prices?.gold.changePct)}
+          changeType={dir(prices?.gold.change)}
           icon={<IconGold className="w-4 h-4" />}
           subtext="Safe haven demand"
           accentColor="amber"
@@ -70,48 +91,42 @@ export default function OilEnergyPage() {
       </div>
 
       {/* Oil Chart */}
-      {oilData && (
-        <LiveChart
-          data={oilData}
-          title="Brent Crude Oil"
-          subtitle="Price per barrel since Feb 20"
-          color="#ff3b3b"
-          unit="$"
-          height={300}
-        />
-      )}
+      <LiveChart
+        data={oilHistory?.data ?? []}
+        title="Brent Crude Oil"
+        subtitle="Price per barrel — 60 day history"
+        color="#ff3b3b"
+        unit="$"
+        height={300}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {natGasData && (
-          <LiveChart
-            data={natGasData}
-            title="Natural Gas"
-            subtitle="$/MMBtu"
-            color="#00d68f"
-            unit="$"
-            height={200}
-          />
-        )}
-        {goldData && (
-          <LiveChart
-            data={goldData}
-            title="Gold"
-            subtitle="$/oz"
-            color="#ffb800"
-            unit="$"
-            height={200}
-          />
-        )}
+        <LiveChart
+          data={gasHistory?.data ?? []}
+          title="Natural Gas"
+          subtitle="$/MMBtu"
+          color="#00d68f"
+          unit="$"
+          height={200}
+        />
+        <LiveChart
+          data={goldHistory?.data ?? []}
+          title="Gold"
+          subtitle="$/oz"
+          color="#ffb800"
+          unit="$"
+          height={200}
+        />
       </div>
 
-      {/* Energy & Defense Stocks */}
+      {/* Energy & Defense Stocks — LIVE */}
       <div className="glass-card overflow-hidden">
         <div className="px-5 py-4 border-b border-card-border flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold">Energy & Defense Stocks</h3>
-            <p className="text-[11px] text-muted mt-0.5">Performance since Feb 27 (pre-conflict)</p>
+            <p className="text-[11px] text-muted mt-0.5">Live quotes from Yahoo Finance</p>
           </div>
-          <span className="text-[10px] px-2 py-1 rounded-full bg-accent-green/10 text-accent-green font-bold">All Up</span>
+          <span className="text-[10px] px-2 py-1 rounded-full bg-accent-green/10 text-accent-green font-bold">Live</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -124,18 +139,18 @@ export default function OilEnergyPage() {
               </tr>
             </thead>
             <tbody>
-              {energyStocks.map((stock) => (
-                <tr key={stock.name} className="border-b border-card-border table-row-hover">
+              {(prices?.stocks ?? []).map((stock) => (
+                <tr key={stock.ticker} className="border-b border-card-border table-row-hover">
                   <td className="px-5 py-3.5 font-medium">{stock.name}</td>
                   <td className="px-5 py-3.5 text-right font-mono font-bold tabular-nums">
                     ${stock.price.toFixed(2)}
                   </td>
-                  <td className="px-5 py-3.5 text-right font-mono text-accent-green tabular-nums text-xs">
-                    +${stock.change.toFixed(2)}
+                  <td className={`px-5 py-3.5 text-right font-mono tabular-nums text-xs ${stock.change >= 0 ? "text-accent-green" : "text-accent-red"}`}>
+                    {stock.change >= 0 ? "+" : ""}${stock.change.toFixed(2)}
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-accent-green/10 text-accent-green">
-                      {stock.pct}
+                    <span className={`font-mono text-xs px-2 py-0.5 rounded-full ${stock.changePct >= 0 ? "bg-accent-green/10 text-accent-green" : "bg-accent-red/10 text-accent-red"}`}>
+                      {stock.changePct >= 0 ? "+" : ""}{stock.changePct.toFixed(1)}%
                     </span>
                   </td>
                 </tr>
@@ -145,31 +160,40 @@ export default function OilEnergyPage() {
         </div>
       </div>
 
-      {/* Commodity Table */}
+      {/* Commodity Prices — LIVE */}
       <div className="glass-card overflow-hidden">
         <div className="px-5 py-4 border-b border-card-border">
           <h3 className="text-sm font-bold">Commodity Prices</h3>
-          <p className="text-[11px] text-muted mt-0.5">Changes since pre-conflict levels</p>
+          <p className="text-[11px] text-muted mt-0.5">Live futures prices</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-card-border">
                 <th className="text-left px-5 py-3 text-[11px] text-muted font-semibold uppercase tracking-wider">Commodity</th>
-                <th className="text-right px-5 py-3 text-[11px] text-muted font-semibold uppercase tracking-wider">Current</th>
+                <th className="text-right px-5 py-3 text-[11px] text-muted font-semibold uppercase tracking-wider">Price</th>
                 <th className="text-right px-5 py-3 text-[11px] text-muted font-semibold uppercase tracking-wider">Change</th>
                 <th className="text-right px-5 py-3 text-[11px] text-muted font-semibold uppercase tracking-wider">%</th>
               </tr>
             </thead>
             <tbody>
-              {commodityPrices.map((c) => (
+              {prices && [
+                { name: "Brent Crude", ...prices.oil.brent },
+                { name: "WTI Crude", ...prices.oil.wti },
+                { name: "Natural Gas", ...prices.naturalGas },
+                { name: "Gold", ...prices.gold },
+                { name: "Wheat", ...prices.wheat },
+                { name: "Copper", ...prices.copper },
+              ].map((c) => (
                 <tr key={c.name} className="border-b border-card-border table-row-hover">
                   <td className="px-5 py-3.5 font-medium">{c.name}</td>
-                  <td className="px-5 py-3.5 text-right font-mono font-bold tabular-nums">{c.value}</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-accent-red tabular-nums text-xs">{c.change}</td>
+                  <td className="px-5 py-3.5 text-right font-mono font-bold tabular-nums">${c.price.toFixed(2)}</td>
+                  <td className={`px-5 py-3.5 text-right font-mono tabular-nums text-xs ${c.change >= 0 ? "text-accent-green" : "text-accent-red"}`}>
+                    {c.change >= 0 ? "+" : ""}${c.change.toFixed(2)}
+                  </td>
                   <td className="px-5 py-3.5 text-right">
-                    <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-accent-red/10 text-accent-red">
-                      {c.pct}
+                    <span className={`font-mono text-xs px-2 py-0.5 rounded-full ${c.changePct >= 0 ? "bg-accent-green/10 text-accent-green" : "bg-accent-red/10 text-accent-red"}`}>
+                      {c.changePct >= 0 ? "+" : ""}{c.changePct.toFixed(1)}%
                     </span>
                   </td>
                 </tr>
@@ -179,33 +203,11 @@ export default function OilEnergyPage() {
         </div>
       </div>
 
-      {/* Shipping Routes */}
+      {/* Shipping Routes — curated */}
       <div className="glass-card p-5">
         <h3 className="text-sm font-bold mb-4">Alternative Shipping Routes</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              label: "Cape of Good Hope Route",
-              value: "+14 days",
-              sub: "~11,000 extra nautical miles. $1M+ extra fuel per voyage.",
-              color: "from-amber-500/10 to-transparent",
-              textColor: "text-accent-amber",
-            },
-            {
-              label: "Suez Canal Congestion",
-              value: "+8 days",
-              sub: "Wait times surging as more ships reroute through Suez.",
-              color: "from-red-500/10 to-transparent",
-              textColor: "text-accent-red",
-            },
-            {
-              label: "Insurance Premium Increase",
-              value: "+800%",
-              sub: "Most insurers have suspended Persian Gulf coverage entirely.",
-              color: "from-red-500/10 to-transparent",
-              textColor: "text-accent-red",
-            },
-          ].map((item) => (
+          {(meta?.shippingRoutes ?? []).map((item) => (
             <div
               key={item.label}
               className={`relative overflow-hidden rounded-xl border border-card-border p-4 bg-gradient-to-br ${item.color}`}

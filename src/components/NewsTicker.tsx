@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ShareRow } from "./ShareButton";
+import { useLiveData } from "@/hooks/useLiveData";
 
 interface NewsItem {
   id: number;
@@ -9,69 +9,16 @@ interface NewsItem {
   source: string;
   headline: string;
   urgency: "breaking" | "urgent" | "normal";
+  url?: string;
 }
 
-const MOCK_NEWS: NewsItem[] = [
-  {
-    id: 1,
-    time: "2 min ago",
-    source: "Reuters",
-    headline: "Iran's acting Supreme Leader rejects US ceasefire proposal, demands 'permanent solution'",
-    urgency: "breaking",
-  },
-  {
-    id: 2,
-    time: "18 min ago",
-    source: "AP",
-    headline: "Pentagon moves additional carrier strike group toward Persian Gulf",
-    urgency: "urgent",
-  },
-  {
-    id: 3,
-    time: "34 min ago",
-    source: "Al Jazeera",
-    headline: "Pakistan-mediated talks in Islamabad end without agreement on 45-day ceasefire",
-    urgency: "breaking",
-  },
-  {
-    id: 4,
-    time: "1 hr ago",
-    source: "CNN",
-    headline: "Oil surges past $142/barrel as Strait of Hormuz remains closed on day 38",
-    urgency: "urgent",
-  },
-  {
-    id: 5,
-    time: "1 hr ago",
-    source: "BBC",
-    headline: "European nations announce emergency fuel rationing plans amid supply disruption",
-    urgency: "urgent",
-  },
-  {
-    id: 6,
-    time: "2 hr ago",
-    source: "NPR",
-    headline: "Trump sets 8pm ET deadline for Iran to reopen Strait of Hormuz or face infrastructure strikes",
-    urgency: "breaking",
-  },
-  {
-    id: 7,
-    time: "3 hr ago",
-    source: "Bloomberg",
-    headline: "Global shipping insurers suspend coverage for Persian Gulf transit",
-    urgency: "normal",
-  },
-  {
-    id: 8,
-    time: "4 hr ago",
-    source: "Reuters",
-    headline: "China calls for 'immediate de-escalation', offers to mediate alongside Pakistan",
-    urgency: "normal",
-  },
-];
+interface NewsResponse {
+  ticker: NewsItem[];
+}
 
 export default function NewsTicker() {
-  const [news] = useState<NewsItem[]>(MOCK_NEWS);
+  const { data, loading } = useLiveData<NewsResponse>("/api/news", 120000);
+  const news = data?.ticker ?? [];
 
   return (
     <div className="glass-card overflow-hidden flex flex-col h-full">
@@ -81,11 +28,17 @@ export default function NewsTicker() {
           <span className="w-2 h-2 rounded-full bg-accent-red animate-pulse-live" />
           <h3 className="text-sm font-bold">Live Feed</h3>
         </div>
-        <span className="text-[10px] text-muted font-mono">Auto-updating</span>
+        <span className="text-[10px] text-muted font-mono">GDELT — Auto-updating</span>
       </div>
 
       {/* News Items */}
       <div className="flex-1 overflow-y-auto">
+        {loading && news.length === 0 && (
+          <div className="p-6 text-center text-muted text-sm">
+            <div className="w-4 h-4 border-2 border-accent-red/30 border-t-accent-red rounded-full animate-spin mx-auto mb-2" />
+            Loading live news...
+          </div>
+        )}
         {news.map((item, i) => (
           <div
             key={item.id}
@@ -131,6 +84,11 @@ export default function NewsTicker() {
             </div>
           </div>
         ))}
+        {!loading && news.length === 0 && (
+          <div className="p-6 text-center text-muted text-sm">
+            No news available at this time.
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,8 +3,7 @@
 import StatCard from "@/components/StatCard";
 import LiveChart from "@/components/LiveChart";
 import { IconOil, IconShip, IconAnchor, IconClock } from "@/components/Icons";
-import { generateShippingVolume, shipTrackingData } from "@/lib/mock-data";
-import { useClientData } from "@/hooks/useClientData";
+import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import ShareButton from "@/components/ShareButton";
 import dynamic from "next/dynamic";
 
@@ -20,8 +19,20 @@ const HormuzMap = dynamic(() => import("@/components/HormuzMap"), {
   ),
 });
 
+interface MetaData {
+  dayOfBlockade: number;
+  straitStatus: { status: string; oilFlow: string; oilFlowDetail: string; shipsRerouted: number; shipsWaiting: number; avgDelay: string };
+  shipTrackingData: { name: string; before: number | string; now: number | string; status: string }[];
+}
+
+interface HistoryData {
+  data: { time: string; value: number }[];
+}
+
 export default function HormuzPage() {
-  const shippingData = useClientData(generateShippingVolume);
+  const { data: meta } = useLiveData<MetaData>("/api/meta", 3600000);
+  const { data: oilHistory } = useFetchOnce<HistoryData>("/api/history?symbol=BZ=F&days=60");
+  const strait = meta?.straitStatus;
 
   return (
     <div className="space-y-6 animate-slide-in">
@@ -47,8 +58,12 @@ export default function HormuzPage() {
               <span className="absolute h-3 w-3 rounded-full bg-accent-red/40 animate-ping" />
               <span className="relative h-2 w-2 rounded-full bg-accent-red" />
             </span>
-            <span className="font-bold text-accent-red text-sm tracking-wide">STRAIT STATUS: BLOCKED</span>
-            <span className="text-xs text-muted">Day 36 of IRGC naval blockade</span>
+            <span className="font-bold text-accent-red text-sm tracking-wide">
+              STRAIT STATUS: {strait?.status ?? "—"}
+            </span>
+            <span className="text-xs text-muted">
+              Day {meta?.dayOfBlockade ?? "—"} of IRGC naval blockade
+            </span>
           </div>
           <p className="text-sm text-foreground/70 leading-relaxed">
             IRGC Navy has deployed mines, fast-attack boats, and anti-ship missiles.
@@ -61,29 +76,29 @@ export default function HormuzPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Oil Flow"
-          value="0.3 mb/d"
-          change="Down from 21 mb/d"
+          value={strait?.oilFlow ?? "—"}
+          change={strait?.oilFlowDetail ?? ""}
           changeType="up"
           icon={<IconOil className="w-4 h-4" />}
           accentColor="red"
         />
         <StatCard
           label="Ships Rerouted"
-          value="78"
+          value={strait ? `${strait.shipsRerouted}` : "—"}
           change="Via Cape of Good Hope"
           icon={<IconShip className="w-4 h-4" />}
           accentColor="cyan"
         />
         <StatCard
           label="Ships Waiting"
-          value="42"
+          value={strait ? `${strait.shipsWaiting}` : "—"}
           change="Anchored off Oman"
           icon={<IconAnchor className="w-4 h-4" />}
           accentColor="amber"
         />
         <StatCard
           label="Avg Delay"
-          value="14+ days"
+          value={strait?.avgDelay ?? "—"}
           change="Via alternative route"
           changeType="up"
           icon={<IconClock className="w-4 h-4" />}
@@ -95,16 +110,14 @@ export default function HormuzPage() {
       <HormuzMap />
 
       {/* Chart */}
-      {shippingData && (
-        <LiveChart
-          data={shippingData}
-          title="Daily Oil Flow Through Strait"
-          subtitle="Million Barrels/Day"
-          color="#00d4ff"
-          unit=" mb/d"
-          height={260}
-        />
-      )}
+      <LiveChart
+        data={oilHistory?.data ?? []}
+        title="Brent Crude Oil Price"
+        subtitle="Impact on oil prices since blockade"
+        color="#00d4ff"
+        unit="$"
+        height={260}
+      />
 
       {/* Traffic Table */}
       <div className="glass-card overflow-hidden">
@@ -123,7 +136,7 @@ export default function HormuzPage() {
               </tr>
             </thead>
             <tbody>
-              {shipTrackingData.map((row) => (
+              {(meta?.shipTrackingData ?? []).map((row) => (
                 <tr key={row.name} className="border-b border-card-border table-row-hover">
                   <td className="px-5 py-3.5 font-medium text-foreground/90">{row.name}</td>
                   <td className="px-5 py-3.5 text-right font-mono text-muted tabular-nums">{row.before}</td>

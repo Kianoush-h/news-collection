@@ -3,7 +3,7 @@
 import StatCard from "@/components/StatCard";
 import ShareButton from "@/components/ShareButton";
 import { IconCalendar, IconTarget, IconMissile, IconDove } from "@/components/Icons";
-import { conflictEvents } from "@/lib/mock-data";
+import { useLiveData } from "@/hooks/useLiveData";
 import dynamic from "next/dynamic";
 
 const ConflictMapView = dynamic(() => import("@/components/ConflictMapView"), {
@@ -18,7 +18,26 @@ const ConflictMapView = dynamic(() => import("@/components/ConflictMapView"), {
   ),
 });
 
+interface MetaData {
+  dayOfConflict: number;
+  majorStrikes: string;
+  retaliations: string;
+  ceasefireAttempts: number;
+  conflictEvents: {
+    date: string;
+    title: string;
+    description: string;
+    type: string;
+    lat: number;
+    lng: number;
+    severity: string;
+  }[];
+}
+
 export default function ConflictMapPage() {
+  const { data: meta } = useLiveData<MetaData>("/api/meta", 3600000);
+  const events = meta?.conflictEvents ?? [];
+
   return (
     <div className="space-y-6 animate-slide-in">
       <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -37,28 +56,28 @@ export default function ConflictMapPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Days of Conflict"
-          value="38"
+          value={meta ? `${meta.dayOfConflict}` : "—"}
           subtext="Feb 28 — Present"
           icon={<IconCalendar className="w-4 h-4" />}
           accentColor="red"
         />
         <StatCard
           label="Major Strikes"
-          value="240+"
+          value={meta?.majorStrikes ?? "—"}
           change="By US/Israel on Iran"
           icon={<IconTarget className="w-4 h-4" />}
           accentColor="red"
         />
         <StatCard
           label="Iranian Retaliations"
-          value="85+"
+          value={meta?.retaliations ?? "—"}
           change="Missiles & drones"
           icon={<IconMissile className="w-4 h-4" />}
           accentColor="amber"
         />
         <StatCard
           label="Ceasefire Attempts"
-          value="3"
+          value={meta ? `${meta.ceasefireAttempts}` : "—"}
           change="All rejected"
           changeType="up"
           icon={<IconDove className="w-4 h-4" />}
@@ -77,11 +96,10 @@ export default function ConflictMapPage() {
         </div>
         <div className="p-5">
           <div className="relative">
-            {/* Timeline line with gradient */}
             <div className="absolute left-[18px] top-2 bottom-2 w-px bg-gradient-to-b from-accent-red via-accent-amber to-accent-blue" />
 
             <div className="space-y-8">
-              {conflictEvents.map((event, i) => {
+              {events.map((event, i) => {
                 const severityColor =
                   event.severity === "critical"
                     ? "bg-accent-red"
@@ -120,7 +138,6 @@ export default function ConflictMapPage() {
                     className="relative flex gap-4 pl-10 group animate-slide-in"
                     style={{ animationDelay: `${i * 60}ms` }}
                   >
-                    {/* Dot */}
                     <div
                       className={`absolute left-[13px] top-1 w-3 h-3 rounded-full ${severityColor} ring-[3px] ring-background shadow-lg ${severityGlow}`}
                     />

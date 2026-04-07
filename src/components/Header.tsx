@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLiveData } from "@/hooks/useLiveData";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -9,6 +10,7 @@ interface HeaderProps {
 export default function Header({ onMenuToggle }: HeaderProps) {
   const [time, setTime] = useState<string>("");
   const [mounted, setMounted] = useState(false);
+  const { data: meta } = useLiveData<{ dayOfConflict: number }>("/api/meta", 3600000);
 
   useEffect(() => {
     setMounted(true);
@@ -56,7 +58,7 @@ export default function Header({ onMenuToggle }: HeaderProps) {
         <div className="hidden sm:flex items-center gap-2">
           <div className="w-px h-4 bg-card-border" />
           <span className="text-xs text-muted-light font-medium">
-            Day <span className="text-foreground font-bold">38</span> of Conflict
+            Day <span className="text-foreground font-bold">{meta?.dayOfConflict ?? "—"}</span> of Conflict
           </span>
         </div>
       </div>
