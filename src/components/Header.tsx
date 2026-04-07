@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-export default function Header() {
+interface HeaderProps {
+  onMenuToggle?: () => void;
+}
+
+export default function Header({ onMenuToggle }: HeaderProps) {
   const [time, setTime] = useState<string>("");
   const [mounted, setMounted] = useState(false);
 
@@ -29,10 +33,20 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-background/70 backdrop-blur-xl border-b border-card-border px-6 py-3 flex items-center justify-between">
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-40 bg-background/70 backdrop-blur-xl border-b border-card-border px-3 sm:px-6 py-3 flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2 sm:gap-4">
+        {/* Hamburger — mobile only */}
+        <button
+          className="lg:hidden p-2 -ml-1 rounded-lg text-muted-light hover:text-foreground hover:bg-white/[0.06] transition-colors"
+          onClick={onMenuToggle}
+          aria-label="Open menu"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
         {/* Live Badge */}
-        <div className="flex items-center gap-2 bg-accent-red/10 border border-accent-red/20 rounded-full px-3 py-1.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-accent-red/10 border border-accent-red/20 rounded-full px-2.5 sm:px-3 py-1.5">
           <span className="w-2 h-2 rounded-full bg-accent-red animate-pulse-live" />
           <span className="text-[11px] font-bold text-accent-red uppercase tracking-widest">
             Live
@@ -47,18 +61,18 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-2 sm:gap-5">
         {/* Deadline */}
-        <div className="flex items-center gap-2.5 bg-accent-amber/5 border border-accent-amber/15 rounded-lg px-3 py-1.5">
+        <div className="flex items-center gap-2.5 bg-accent-amber/5 border border-accent-amber/15 rounded-lg px-2 sm:px-3 py-1.5">
           <div className="flex flex-col items-end">
-            <span className="text-[9px] font-bold text-accent-amber/70 uppercase tracking-widest leading-none mb-0.5">
-              Hormuz Deadline
+            <span className="text-[8px] sm:text-[9px] font-bold text-accent-amber/70 uppercase tracking-widest leading-none mb-0.5">
+              <span className="hidden sm:inline">Hormuz </span>Deadline
             </span>
             <DeadlineCountdown />
           </div>
         </div>
-        {/* Clock */}
-        <span className="text-xs font-mono text-muted tabular-nums">
+        {/* Clock — hidden on mobile */}
+        <span className="hidden sm:inline text-xs font-mono text-muted tabular-nums">
           {mounted ? time : "\u00A0"}
         </span>
       </div>

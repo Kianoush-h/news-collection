@@ -128,14 +128,14 @@ export default function ImpactCalculator() {
         </div>
 
         {/* Search */}
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 mb-6">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCheck()}
             placeholder="ZIP code or city (e.g. 10001, New York, Miami)..."
-            className="bg-white/[0.04] border border-card-border rounded-xl px-4 py-2.5 text-sm w-80 focus:outline-none focus:border-accent-blue/50 focus:ring-1 focus:ring-accent-blue/20 transition-all placeholder:text-muted"
+            className="bg-white/[0.04] border border-card-border rounded-xl px-4 py-2.5 text-sm w-full sm:w-80 focus:outline-none focus:border-accent-blue/50 focus:ring-1 focus:ring-accent-blue/20 transition-all placeholder:text-muted"
           />
           <button
             onClick={handleCheck}

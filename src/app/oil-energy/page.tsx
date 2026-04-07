@@ -19,9 +19,9 @@ export default function OilEnergyPage() {
 
   return (
     <div className="space-y-6 animate-slide-in">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
             <span className="gradient-text-green">Oil & Energy</span> Crisis Dashboard
           </h1>
           <p className="text-muted text-sm mt-1">

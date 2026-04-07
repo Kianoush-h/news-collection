@@ -64,7 +64,7 @@ export default function StatCard({
           </div>
         )}
       </div>
-      <div className="text-[22px] font-bold font-mono tabular-nums tracking-tight leading-none">
+      <div className="text-lg sm:text-[22px] font-bold font-mono tabular-nums tracking-tight leading-none">
         {value}
       </div>
       {change && (

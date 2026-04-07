@@ -124,6 +124,13 @@ body::before {
   border-color: var(--card-border-hover);
 }
 
+/* Mobile touch improvements */
+@media (max-width: 1023px) {
+  .glass-card {
+    border-radius: 12px;
+  }
+}
+
 /* Map container */
 .leaflet-container {
   background: #06060b !important;

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import LayoutShell from "@/components/LayoutShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,21 +47,12 @@ export const metadata: Metadata = {
     description:
       "Real-time tracking of the Iran-US conflict. Oil prices, Strait of Hormuz status, gas prices, war map, and daily life impact. Updated every 60 seconds.",
     siteName: "Crisis Watch",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Crisis Watch — Live Iran-US War Dashboard",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Crisis Watch — Live Iran-US War Dashboard",
     description:
       "Real-time tracking: oil prices, Strait of Hormuz blockade, gas prices, war map & timeline. How does the Iran-US conflict affect you?",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -91,6 +81,18 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQPH98DCQ5" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SQPH98DCQ5');
+`,
+          }}
+        />
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -148,11 +150,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex bg-background text-foreground">
-        <Sidebar />
-        <div className="flex-1 flex flex-col ml-[260px]">
-          <Header />
-          <main className="flex-1 p-6 overflow-auto">{children}</main>
-        </div>
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

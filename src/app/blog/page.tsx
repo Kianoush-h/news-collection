@@ -206,9 +206,9 @@ export default function BlogPage() {
   return (
     <div className="space-y-6 animate-slide-in">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
             <span className="gradient-text-red">Live Blog</span> — Iran-US Conflict
           </h1>
           <p className="text-muted text-sm mt-1">
@@ -222,11 +222,11 @@ export default function BlogPage() {
       </div>
 
       {/* Auto-update banner */}
-      <div className="glass-card p-4 flex items-center justify-between">
+      <div className="glass-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="w-2 h-2 rounded-full bg-accent-red animate-pulse-live" />
+          <span className="w-2 h-2 rounded-full bg-accent-red animate-pulse-live flex-shrink-0" />
           <span className="text-sm font-semibold">Auto-Updating</span>
-          <span className="text-xs text-muted">New articles every 3 minutes</span>
+          <span className="text-xs text-muted hidden sm:inline">New articles every 3 minutes</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted">Next update in</span>
