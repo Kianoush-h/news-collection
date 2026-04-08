@@ -14,6 +14,7 @@ interface PricesData {
   gold: { price: number; change: number; changePct: number };
   wheat: { price: number; change: number; changePct: number };
   copper: { price: number; change: number; changePct: number };
+  jetFuel: { price: number; change: number; changePct: number };
 }
 
 interface MetaData {
@@ -154,7 +155,7 @@ export default function ImpactPage() {
                   { name: "Natural Gas", ...prices.naturalGas },
                   { name: "Gold", ...prices.gold },
                   { name: "Wheat", ...prices.wheat },
-                  { name: "Copper", ...prices.copper },
+                  { name: "Jet Fuel (proxy)", ...prices.jetFuel },
                 ].map((row) => (
                   <tr key={row.name} className="border-b border-card-border table-row-hover">
                     <td className="px-5 py-3 font-medium">{row.name}</td>

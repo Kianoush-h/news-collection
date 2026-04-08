@@ -17,8 +17,9 @@ interface NewsResponse {
 }
 
 export default function NewsTicker() {
-  const { data, loading } = useLiveData<NewsResponse>("/api/news", 120000);
+  const { data, loading, error } = useLiveData<NewsResponse>("/api/news", 120000);
   const news = data?.ticker ?? [];
+  const serverError = (data as NewsResponse & { error?: string })?.error;
 
   return (
     <div className="glass-card overflow-hidden flex flex-col h-full">
@@ -86,7 +87,9 @@ export default function NewsTicker() {
         ))}
         {!loading && news.length === 0 && (
           <div className="p-6 text-center text-muted text-sm">
-            No news available at this time.
+            {error || serverError
+              ? `Feed error: ${error || serverError}. Retrying...`
+              : "No news available at this time."}
           </div>
         )}
       </div>

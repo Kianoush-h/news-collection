@@ -16,15 +16,19 @@ export function cacheSet<T>(key: string, value: T, ttlMs: number): void {
 }
 
 // Get cached value, or fetch and cache it
+// If shouldCache returns false, the value is returned but not stored
 export async function cached<T>(
   key: string,
   ttlMs: number,
-  fetcher: () => Promise<T>
+  fetcher: () => Promise<T>,
+  shouldCache?: (value: T) => boolean
 ): Promise<T> {
   const existing = cacheGet<T>(key);
   if (existing !== null) return existing;
 
   const value = await fetcher();
-  cacheSet(key, value, ttlMs);
+  if (!shouldCache || shouldCache(value)) {
+    cacheSet(key, value, ttlMs);
+  }
   return value;
 }
