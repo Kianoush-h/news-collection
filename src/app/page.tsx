@@ -6,6 +6,7 @@ import LiveChart from "@/components/LiveChart";
 import { IconTarget, IconOil, IconBlock, IconGas, IconShip, IconTrendUp, IconMap } from "@/components/Icons";
 import ShareButton from "@/components/ShareButton";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 interface PricesData {
@@ -25,11 +26,29 @@ interface HistoryData {
   data: { time: string; value: number }[];
 }
 
+interface NewsResponse {
+  ticker: { id: number; headline: string; source: string; urgency: string }[];
+}
+
 export default function Home() {
   const { data: prices } = useLiveData<PricesData>("/api/prices", 60000);
   const { data: meta } = useLiveData<MetaData>("/api/meta", 3600000);
+  const { data: newsData } = useLiveData<NewsResponse>("/api/news", 120000);
   const { data: oilHistory } = useFetchOnce<HistoryData>("/api/history?symbol=BZ=F&days=60");
   const { data: gasHistory } = useFetchOnce<HistoryData>("/api/history?symbol=RB=F&days=60");
+
+  const [tickerIdx, setTickerIdx] = useState(0);
+  const headlines = newsData?.ticker ?? [];
+
+  useEffect(() => {
+    if (headlines.length <= 1) return;
+    const id = setInterval(() => {
+      setTickerIdx((prev) => (prev + 1) % headlines.length);
+    }, 10000);
+    return () => clearInterval(id);
+  }, [headlines.length]);
+
+  const current = headlines[tickerIdx];
 
   const fmt = (v: number | undefined, prefix = "$") =>
     v != null ? `${prefix}${v.toFixed(2)}` : "—";
@@ -49,7 +68,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Alert Banner */}
+      {/* Live Breaking Banner — rotates every 10s */}
       <div className="relative overflow-hidden rounded-2xl border border-accent-red/20">
         <div className="absolute inset-0 bg-gradient-to-r from-red-950/40 via-red-900/20 to-orange-950/30" />
         <div className="relative px-5 py-4 flex items-start gap-4">
@@ -59,14 +78,27 @@ export default function Home() {
               <span className="relative h-2.5 w-2.5 rounded-full bg-accent-red" />
             </span>
           </div>
-          <div>
-            <span className="text-accent-red font-bold text-xs uppercase tracking-widest">
-              Breaking
-            </span>
-            <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
-              Trump&apos;s deadline for Iran to reopen Strait of Hormuz expires tonight
-              at 8:00 PM ET. Iran has rejected the 45-day ceasefire proposal.
-              Pentagon moves additional carrier strike group toward Persian Gulf.
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-accent-red font-bold text-xs uppercase tracking-widest">
+                {current?.urgency === "breaking" ? "Breaking" : "Live"}
+              </span>
+              {current && (
+                <span className="text-[10px] font-semibold text-accent-blue">
+                  {current.source}
+                </span>
+              )}
+              {headlines.length > 1 && (
+                <span className="text-[10px] text-muted font-mono ml-auto tabular-nums">
+                  {tickerIdx + 1}/{headlines.length}
+                </span>
+              )}
+            </div>
+            <p
+              key={current?.id ?? 0}
+              className="text-sm text-foreground/90 leading-relaxed animate-slide-in"
+            >
+              {current?.headline ?? "Loading live feed..."}
             </p>
           </div>
         </div>

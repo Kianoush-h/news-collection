@@ -244,10 +244,32 @@ export async function fetchNews() {
     const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&maxrecords=30&format=json&sort=DateDesc`;
 
     try {
-      const res = await fetch(url);
-      if (!res.ok) return { ticker: [], blog: [] };
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
 
-      const data = await res.json();
+      const res = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          "User-Agent": "CrisisWatch/1.0 (https://crisiswatch.ca)",
+          "Accept": "application/json",
+        },
+      });
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        console.error(`GDELT returned ${res.status}: ${res.statusText}`);
+        return { ticker: [], blog: [], error: `GDELT HTTP ${res.status}` };
+      }
+
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error("GDELT returned non-JSON:", text.slice(0, 200));
+        return { ticker: [], blog: [], error: "GDELT non-JSON response" };
+      }
+
       const articles: GdeltArticle[] = data.articles ?? [];
 
       // Deduplicate by title similarity
@@ -285,8 +307,10 @@ export async function fetchNews() {
       }));
 
       return { ticker, blog, updatedAt: new Date().toISOString() };
-    } catch {
-      return { ticker: [], blog: [], updatedAt: new Date().toISOString() };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("GDELT fetch failed:", msg);
+      return { ticker: [], blog: [], error: msg, updatedAt: new Date().toISOString() };
     }
   });
 }

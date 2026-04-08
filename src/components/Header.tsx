@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useLiveData } from "@/hooks/useLiveData";
 
 interface HeaderProps {
@@ -8,31 +7,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onMenuToggle }: HeaderProps) {
-  const [time, setTime] = useState<string>("");
-  const [mounted, setMounted] = useState(false);
   const { data: meta } = useLiveData<{ dayOfConflict: number }>("/api/meta", 3600000);
-
-  useEffect(() => {
-    setMounted(true);
-    const update = () => {
-      const now = new Date();
-      setTime(
-        now.toLocaleString("en-US", {
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZoneName: "short",
-        })
-      );
-    };
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <header className="sticky top-0 z-40 bg-background/70 backdrop-blur-xl border-b border-card-border px-3 sm:px-6 py-3 flex items-center justify-between gap-2">
@@ -62,66 +37,6 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           </span>
         </div>
       </div>
-
-      <div className="flex items-center gap-2 sm:gap-5">
-        {/* Deadline */}
-        <div className="flex items-center gap-2.5 bg-accent-amber/5 border border-accent-amber/15 rounded-lg px-2 sm:px-3 py-1.5">
-          <div className="flex flex-col items-end">
-            <span className="text-[8px] sm:text-[9px] font-bold text-accent-amber/70 uppercase tracking-widest leading-none mb-0.5">
-              <span className="hidden sm:inline">Hormuz </span>Deadline
-            </span>
-            <DeadlineCountdown />
-          </div>
-        </div>
-        {/* Clock — hidden on mobile */}
-        <span className="hidden sm:inline text-xs font-mono text-muted tabular-nums">
-          {mounted ? time : "\u00A0"}
-        </span>
-      </div>
     </header>
-  );
-}
-
-function DeadlineCountdown() {
-  const [remaining, setRemaining] = useState<string>("");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const deadline = new Date("2026-04-07T20:00:00-04:00");
-
-    const update = () => {
-      const now = new Date();
-      const diff = deadline.getTime() - now.getTime();
-
-      if (diff <= 0) {
-        setRemaining("PASSED");
-        return;
-      }
-
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setRemaining(
-        `${hours.toString().padStart(2, "0")}:${minutes
-          .toString()
-          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
-      );
-    };
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const isPassed = remaining === "PASSED";
-
-  return (
-    <span
-      className={`font-mono font-black text-sm tabular-nums leading-none ${
-        isPassed ? "text-accent-red animate-pulse-glow" : "text-accent-amber animate-count-glow"
-      }`}
-    >
-      {mounted ? remaining : "--:--:--"}
-    </span>
   );
 }
