@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import { fetchAllPrices } from "@/lib/fetchers";
+import { dbGet, ensureStarted } from "@/lib/db";
 
 export async function GET() {
-  try {
-    const prices = await fetchAllPrices();
-    return NextResponse.json(prices);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch prices", updatedAt: new Date().toISOString() },
-      { status: 500 }
-    );
+  ensureStarted();
+  const prices = dbGet("prices");
+  if (!prices) {
+    return NextResponse.json({ error: "Data loading — first refresh in progress", updatedAt: new Date().toISOString() }, { status: 503 });
   }
+  return NextResponse.json(prices);
 }

@@ -1,18 +1,14 @@
 import { NextResponse } from "next/server";
-import { fetchHistory } from "@/lib/fetchers";
+import { dbGet, ensureStarted } from "@/lib/db";
 
 export async function GET(request: Request) {
+  ensureStarted();
   const { searchParams } = new URL(request.url);
   const symbol = searchParams.get("symbol") ?? "BZ=F";
-  const days = parseInt(searchParams.get("days") ?? "60", 10);
 
-  try {
-    const data = await fetchHistory(symbol, days);
-    return NextResponse.json({ data, updatedAt: new Date().toISOString() });
-  } catch {
-    return NextResponse.json(
-      { data: [], error: "Failed to fetch history", updatedAt: new Date().toISOString() },
-      { status: 500 }
-    );
+  const data = dbGet<{ time: string; value: number }[]>(`history:${symbol}`);
+  if (!data) {
+    return NextResponse.json({ data: [], error: "Data loading — first refresh in progress", updatedAt: new Date().toISOString() }, { status: 503 });
   }
+  return NextResponse.json({ data, updatedAt: new Date().toISOString() });
 }
