@@ -4,6 +4,7 @@ import {
   fetchAllPrices,
   fetchHistory,
   fetchNews,
+  fetchFireData,
   computeGasByState,
   estimateShippingDisruption,
 } from "./fetchers";
@@ -79,14 +80,18 @@ async function refreshAll(): Promise<void> {
   const start = Date.now();
 
   try {
-    // Fetch prices and news in parallel
-    const [prices, news] = await Promise.all([
+    // Fetch prices, news, and fire data in parallel
+    const [prices, news, fires] = await Promise.all([
       fetchAllPrices().catch((e: Error) => {
         console.error("[DB] Prices fetch failed:", e.message);
         return null;
       }),
       fetchNews().catch((e: Error) => {
         console.error("[DB] News fetch failed:", e.message);
+        return null;
+      }),
+      fetchFireData().catch((e: Error) => {
+        console.error("[DB] Fire data fetch failed:", e.message);
         return null;
       }),
     ]);
@@ -97,6 +102,11 @@ async function refreshAll(): Promise<void> {
       dbSet("news", news);
     } else {
       console.log("[DB] GDELT returned 0 articles — keeping previous data");
+    }
+
+    // Store fire data
+    if (fires && fires.length > 0) {
+      dbSet("fires", fires);
     }
 
     // Fetch chart histories sequentially to avoid overwhelming Yahoo Finance

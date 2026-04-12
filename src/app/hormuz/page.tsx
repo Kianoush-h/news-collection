@@ -5,19 +5,7 @@ import LiveChart from "@/components/LiveChart";
 import { IconOil, IconShip, IconAnchor, IconClock } from "@/components/Icons";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import ShareButton from "@/components/ShareButton";
-import dynamic from "next/dynamic";
-
-const HormuzMap = dynamic(() => import("@/components/HormuzMap"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[420px] glass-card flex items-center justify-center text-muted">
-      <div className="flex items-center gap-2">
-        <div className="w-4 h-4 border-2 border-accent-cyan/30 border-t-accent-cyan rounded-full animate-spin" />
-        <span className="text-sm">Loading map...</span>
-      </div>
-    </div>
-  ),
-});
+import HormuzMap from "@/components/HormuzMap";
 
 interface MetaData {
   dayOfBlockade: number;

@@ -503,6 +503,71 @@ function guessCoordinates(title: string): { lat: number; lng: number } {
   return { lat: 29.0 + Math.random() * 5, lng: 50.0 + Math.random() * 8 };
 }
 
+// ─── NASA FIRMS Fire / Thermal Hotspots ──────────────────────────────
+
+export interface FireHotspot {
+  lat: number;
+  lng: number;
+  brightness: number;
+  frp: number; // fire radiative power (MW)
+  date: string;
+  time: string;
+  confidence: string;
+  daynight: string;
+}
+
+export async function fetchFireData() {
+  return cached(
+    "fires:mideast",
+    300_000, // 5 min cache
+    async () => {
+      const url =
+        "https://firms.modaps.eosdis.nasa.gov/data/active_fire/suomi-npp-viirs-c2/csv/SUOMI_VIIRS_C2_Global_24h.csv";
+
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+        const res = await fetch(url, {
+          signal: controller.signal,
+          headers: { "User-Agent": "CrisisWatch/1.0" },
+        });
+        clearTimeout(timeout);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const lines = text.split("\n");
+
+        // Filter to Middle East bounding box: lat 20-42, lng 35-65
+        const hotspots: FireHotspot[] = [];
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(",");
+          if (cols.length < 13) continue;
+          const lat = parseFloat(cols[0]);
+          const lng = parseFloat(cols[1]);
+          if (lat < 20 || lat > 42 || lng < 35 || lng > 65) continue;
+          hotspots.push({
+            lat,
+            lng,
+            brightness: parseFloat(cols[2]),
+            frp: parseFloat(cols[11]),
+            date: cols[5],
+            time: cols[6],
+            confidence: cols[8],
+            daynight: cols[12],
+          });
+        }
+
+        console.log(`[FIRMS] ${hotspots.length} fire hotspots in Middle East (last 24h)`);
+        return hotspots;
+      } catch (e) {
+        console.error("[FIRMS] Fetch failed:", e instanceof Error ? e.message : e);
+        return [];
+      }
+    },
+    (r) => r.length > 0
+  );
+}
+
 // ─── Gas Prices by State (computed from RBOB futures) ────────────────
 
 // State gas tax per gallon (2025 data, includes state excise + avg local taxes)
