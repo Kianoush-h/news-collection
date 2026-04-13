@@ -1,7 +1,9 @@
 "use client";
 
+import React from "react";
 import { useLiveData } from "@/hooks/useLiveData";
 import ShareButton, { ShareRow } from "@/components/ShareButton";
+import AdsterraBanner from "@/components/AdsterraBanner";
 
 interface BlogPost {
   id: string;
@@ -101,9 +103,13 @@ export default function BlogPage() {
             Fetching live articles from GDELT...
           </div>
         )}
-        {posts.map((post) => (
+        {posts.map((post, idx) => (
+          <React.Fragment key={post.id}>
+          {/* Ad after every 3rd article */}
+          {idx > 0 && idx % 3 === 0 && (
+            <AdsterraBanner className="my-2" />
+          )}
           <article
-            key={post.id}
             className="glass-card overflow-hidden"
           >
             <div className="p-5">
@@ -151,6 +157,7 @@ export default function BlogPage() {
               </div>
             </div>
           </article>
+          </React.Fragment>
         ))}
       </div>
     </div>

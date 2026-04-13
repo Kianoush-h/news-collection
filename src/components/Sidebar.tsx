@@ -165,6 +165,9 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           <div className="text-[10px] text-muted leading-relaxed">
             Sources: Reuters, AP, GDELT, Al Jazeera
           </div>
+          <Link href="/privacy" onClick={onClose} className="block text-[10px] text-muted hover:text-muted-light transition-colors">
+            Privacy Policy
+          </Link>
         </div>
       </aside>
     </>

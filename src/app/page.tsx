@@ -8,6 +8,7 @@ import ShareButton from "@/components/ShareButton";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import AdsterraBanner from "@/components/AdsterraBanner";
 
 interface PricesData {
   oil: { brent: { price: number; change: number; changePct: number }; wti: { price: number } };
@@ -103,6 +104,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Ad — below breaking banner */}
+      <AdsterraBanner className="my-2" />
 
       {/* Key Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

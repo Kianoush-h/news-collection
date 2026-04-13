@@ -5,6 +5,7 @@ import LiveChart from "@/components/LiveChart";
 import { IconGas, IconPlane, IconPackage, IconBarChart } from "@/components/Icons";
 import ImpactCalculator from "@/components/ImpactCalculator";
 import ShareButton from "@/components/ShareButton";
+import AdsterraBanner from "@/components/AdsterraBanner";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 
 interface PricesData {
@@ -96,6 +97,9 @@ export default function ImpactPage() {
         unit="$"
         height={260}
       />
+
+      {/* Ad — between chart and tables */}
+      <AdsterraBanner className="my-2" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gas Prices by State — curated */}

@@ -4,6 +4,7 @@ import StatCard from "@/components/StatCard";
 import LiveChart from "@/components/LiveChart";
 import { IconOil, IconFlame, IconGold } from "@/components/Icons";
 import ShareButton from "@/components/ShareButton";
+import AdsterraBanner from "@/components/AdsterraBanner";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 
 interface PricesData {
@@ -118,6 +119,9 @@ export default function OilEnergyPage() {
           height={200}
         />
       </div>
+
+      {/* Ad — between charts and stocks */}
+      <AdsterraBanner className="my-2" />
 
       {/* Energy & Defense Stocks — LIVE */}
       <div className="glass-card overflow-hidden">

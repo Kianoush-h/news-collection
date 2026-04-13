@@ -37,7 +37,7 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           </span>
         </div>
       </div>
-      <span className="text-[10px] font-mono text-muted tabular-nums">v1.0.0</span>
+      <span className="text-[10px] font-mono text-muted tabular-nums">v2.4.5</span>
     </header>
   );
 }
