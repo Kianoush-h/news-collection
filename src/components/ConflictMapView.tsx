@@ -28,20 +28,16 @@ interface FireHotspot {
 
 interface MetaData {
   conflictEvents: ConflictEvent[];
-}
-
-interface FiresData {
   fires: FireHotspot[];
 }
 
 export default function ConflictMapView() {
-  const { data: meta } = useLiveData<MetaData>("/api/meta", 3600000);
-  const { data: firesData } = useLiveData<FiresData>("/api/fires", 300000);
+  const { data: meta } = useLiveData<MetaData>("/api/meta", 300000);
   const [showFires, setShowFires] = useState(true);
   const [showEvents, setShowEvents] = useState(true);
 
   const events = meta?.conflictEvents ?? [];
-  const fires = firesData?.fires ?? [];
+  const fires = meta?.fires ?? [];
 
   // Cluster fire data — group nearby hotspots to avoid overwhelming the map
   const clusteredFires = clusterFires(fires, 0.15);

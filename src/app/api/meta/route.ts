@@ -95,6 +95,8 @@ export async function GET() {
       },
     ],
 
+    fires: dbGet("fires") ?? [],
+
     lastDbRefresh: new Date(dbLastRefresh()).toISOString(),
     updatedAt: new Date().toISOString(),
   });
