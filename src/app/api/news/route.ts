@@ -7,8 +7,12 @@ export async function GET() {
   if (!news) {
     return NextResponse.json(
       { ticker: [], blog: [], error: "Data loading", updatedAt: new Date().toISOString() },
-      { status: 503 }
+      { status: 503 },
     );
   }
-  return NextResponse.json(news);
+  return NextResponse.json(news, {
+    headers: {
+      "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=180",
+    },
+  });
 }

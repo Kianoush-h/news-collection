@@ -1,6 +1,7 @@
 "use client";
 
 import { useLiveData } from "@/hooks/useLiveData";
+import { version } from "../../package.json";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -37,7 +38,7 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           </span>
         </div>
       </div>
-      <span className="text-[10px] font-mono text-muted tabular-nums">v2.4.5</span>
+      <span className="text-[10px] font-mono text-muted tabular-nums">v{version}</span>
     </header>
   );
 }

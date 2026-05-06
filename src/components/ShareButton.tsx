@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "@/hooks/useIsClient";
 
 interface ShareButtonProps {
   title: string;
@@ -73,17 +74,13 @@ export default function ShareButton({
 }: ShareButtonProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mounted = useIsClient();
 
   const shareUrl = url || "https://crisiswatch.ca" + (typeof window !== "undefined" ? window.location.pathname : "");
   const shareText = text || title;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Position the dropdown when opened
   useEffect(() => {

@@ -8,7 +8,17 @@ export async function GET(request: Request) {
 
   const data = dbGet<{ time: string; value: number }[]>(`history:${symbol}`);
   if (!data) {
-    return NextResponse.json({ data: [], error: "Data loading — first refresh in progress", updatedAt: new Date().toISOString() }, { status: 503 });
+    return NextResponse.json(
+      { data: [], error: "Data loading — first refresh in progress", updatedAt: new Date().toISOString() },
+      { status: 503 },
+    );
   }
-  return NextResponse.json({ data, updatedAt: new Date().toISOString() });
+  return NextResponse.json(
+    { data, updatedAt: new Date().toISOString() },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=600",
+      },
+    },
+  );
 }

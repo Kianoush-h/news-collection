@@ -99,5 +99,9 @@ export async function GET() {
 
     lastDbRefresh: new Date(dbLastRefresh()).toISOString(),
     updatedAt: new Date().toISOString(),
+  }, {
+    headers: {
+      "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=900",
+    },
   });
 }
