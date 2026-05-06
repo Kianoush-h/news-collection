@@ -1,12 +1,52 @@
 "use client";
 
+import Link from "next/link";
 import StatCard from "@/components/StatCard";
 import LiveChart from "@/components/LiveChart";
 import { IconGas, IconPlane, IconPackage, IconBarChart } from "@/components/Icons";
 import ImpactCalculator from "@/components/ImpactCalculator";
 import ShareButton from "@/components/ShareButton";
-import AdsterraBanner from "@/components/AdsterraBanner";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
+
+const impactFaq: { q: string; a: string }[] = [
+  {
+    q: "How does the Iran-US war affect gas prices?",
+    a: "The conflict has disrupted oil supply through the Strait of Hormuz, where roughly 20% of the world's oil transits. Brent crude is currently trading well above pre-conflict levels, which feeds into wholesale gasoline futures within hours and reaches retail pumps within 3 to 7 days. US gas prices are up sharply versus the February 2026 baseline, with the largest moves in California, the Pacific Northwest, and Hawaii.",
+  },
+  {
+    q: "Why are flights being cancelled or rerouted?",
+    a: "Most major carriers have suspended overflight of Iranian and Iraqi airspace and a portion of Persian Gulf routes. That forces longer routings, more fuel stops, and higher jet-fuel costs — which the airlines pass through as fare increases and capacity cuts. Disruptions are concentrated on Europe-to-Asia long-hauls and Gulf-hub itineraries.",
+  },
+  {
+    q: "How long will shipping delays last?",
+    a: "Vessels rerouted via the Cape of Good Hope are adding roughly 14 days versus the Suez/Hormuz route. Container shipping rates from Asia to Europe and the US East Coast are elevated. Delays will persist as long as Hormuz transit insurance is suspended; historical Persian Gulf incidents have resolved in weeks once kinetic activity ends, but full normalization of insurance and freight rates typically takes 1–2 months longer.",
+  },
+  {
+    q: "Will the US release oil from the Strategic Petroleum Reserve?",
+    a: "Strategic Petroleum Reserve (SPR) releases are on the table any time Brent breaks above pre-set thresholds. A typical emergency release knocks 8–25 cents off the average gallon over 4–8 weeks. SPR releases are a temporary measure — they smooth the spike but do not replace the underlying supply.",
+  },
+  {
+    q: "How can I check the impact in my specific area?",
+    a: "Use the ZIP code calculator on this page. Enter a US ZIP and you'll see the estimated change to your weekly gas spend, an estimate for groceries (driven by diesel-trucking pass-through), and any flight disruptions originating from your nearest major airport.",
+  },
+  {
+    q: "Where does Crisis Watch get its data?",
+    a: "Gas prices and commodity prices come from Yahoo Finance (RBOB futures and a curated state-level survey). Flight and shipping disruption figures come from public airline notices and AIS vessel-tracking data. See our About page for the full source list and refresh cadence.",
+  },
+];
+
+const impactFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: impactFaq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
 
 interface PricesData {
   gasoline: { price: number; change: number; changePct: number };
@@ -40,6 +80,12 @@ export default function ImpactPage() {
 
   return (
     <div className="space-y-6 animate-slide-in">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(impactFaqJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
@@ -51,6 +97,33 @@ export default function ImpactPage() {
         </div>
         <ShareButton title="War Impact on Daily Life — Gas Prices, Flights & Costs" variant="pill" />
       </div>
+
+      {/* Static intro — crawler-readable summary */}
+      <section className="glass-card p-5 text-sm leading-relaxed text-foreground/80">
+        <p>
+          The Iran-US conflict that began on February 28, 2026 is feeding
+          through to US households via four channels: gasoline at the pump,
+          air travel (cancellations and surcharges), grocery and consumer
+          goods (diesel-trucking pass-through), and consumer confidence. This
+          page tracks each in real time. For the underlying market data, see
+          the{" "}
+          <Link href="/oil-energy" className="text-accent-blue hover:underline">
+            Oil &amp; Energy dashboard
+          </Link>
+          ; for the cause, see the{" "}
+          <Link href="/hormuz" className="text-accent-blue hover:underline">
+            Strait of Hormuz tracker
+          </Link>{" "}
+          and the explainer{" "}
+          <Link
+            href="/blog/how-iran-us-war-affects-gas-prices"
+            className="text-accent-blue hover:underline"
+          >
+            How the Iran-US War Affects Gas Prices at the Pump
+          </Link>
+          .
+        </p>
+      </section>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -97,9 +170,6 @@ export default function ImpactPage() {
         unit="$"
         height={260}
       />
-
-      {/* Ad — between chart and tables */}
-      <AdsterraBanner className="my-2" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gas Prices by State — curated */}
@@ -203,6 +273,39 @@ export default function ImpactPage() {
 
       {/* Personal Impact Calculator */}
       <ImpactCalculator />
+
+      {/* FAQ — visible content matching FAQPage schema */}
+      <section className="glass-card overflow-hidden">
+        <div className="px-5 py-4 border-b border-card-border">
+          <h2 className="text-sm font-bold">Frequently Asked Questions</h2>
+          <p className="text-[11px] text-muted mt-0.5">
+            Common questions about how the conflict affects everyday costs.
+          </p>
+        </div>
+        <div className="divide-y divide-card-border/60">
+          {impactFaq.map((item) => (
+            <details key={item.q} className="group">
+              <summary className="cursor-pointer list-none px-5 py-4 flex items-start justify-between gap-3 hover:bg-white/[0.02] transition-colors">
+                <h3 className="text-sm font-semibold text-foreground">
+                  {item.q}
+                </h3>
+                <svg
+                  className="w-4 h-4 text-muted flex-shrink-0 mt-0.5 transition-transform group-open:rotate-180"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <div className="px-5 pb-4 text-sm text-foreground/75 leading-relaxed">
+                {item.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,10 +1,39 @@
 "use client";
 
+import Link from "next/link";
 import StatCard from "@/components/StatCard";
 import ShareButton from "@/components/ShareButton";
 import { IconCalendar, IconTarget, IconMissile, IconDove } from "@/components/Icons";
 import { useLiveData } from "@/hooks/useLiveData";
 import dynamic from "next/dynamic";
+
+const conflictEventJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "Iran-US Military Conflict 2026",
+  description:
+    "Ongoing Iran-US military conflict including airstrikes, naval blockade of the Strait of Hormuz, missile and drone retaliations, and stalled ceasefire negotiations. Live tracking of strike locations, escalation events, and diplomatic milestones.",
+  startDate: "2026-02-28",
+  eventStatus: "https://schema.org/EventRescheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: "Middle East theater",
+    address: {
+      "@type": "PostalAddress",
+      addressRegion: "Middle East",
+    },
+  },
+  organizer: {
+    "@type": "Organization",
+    name: "State actors: United States, Iran, Israel",
+  },
+  about: {
+    "@type": "Thing",
+    name: "Iran-US conflict, Strait of Hormuz blockade, oil supply disruption",
+  },
+  url: "https://crisiswatch.ca/conflict-map",
+};
 
 const ConflictMapView = dynamic(() => import("@/components/ConflictMapView"), {
   ssr: false,
@@ -40,6 +69,12 @@ export default function ConflictMapPage() {
 
   return (
     <div className="space-y-6 animate-slide-in">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(conflictEventJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
@@ -51,6 +86,31 @@ export default function ConflictMapPage() {
         </div>
         <ShareButton title="Iran-US Conflict Live Map & Timeline — Strikes & Events" variant="pill" />
       </div>
+
+      {/* Static intro — crawler-readable summary */}
+      <section className="glass-card p-5 text-sm leading-relaxed text-foreground/80">
+        <p>
+          The Iran-US conflict began on February 28, 2026 with a coordinated
+          strike on Iranian nuclear infrastructure. This page tracks every
+          subsequent kinetic, naval, and diplomatic milestone on a live map and
+          a timestamped timeline. For the resulting market shock, see the{" "}
+          <Link href="/oil-energy" className="text-accent-blue hover:underline">
+            Oil &amp; Energy dashboard
+          </Link>
+          ; for the chokepoint at the center of the crisis, see the{" "}
+          <Link href="/hormuz" className="text-accent-blue hover:underline">
+            Strait of Hormuz tracker
+          </Link>{" "}
+          and our explainer on{" "}
+          <Link
+            href="/blog/strait-of-hormuz-oil-chokepoint"
+            className="text-accent-blue hover:underline"
+          >
+            why the Strait is the world&apos;s most critical oil chokepoint
+          </Link>
+          .
+        </p>
+      </section>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

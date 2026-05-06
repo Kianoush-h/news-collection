@@ -145,6 +145,84 @@ body::before {
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* Article prose styling */
+.prose-article h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+.prose-article h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose-article p {
+  margin-bottom: 1rem;
+}
+.prose-article p strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.prose-article ul,
+.prose-article ol {
+  margin: 0.75rem 0 1rem 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.prose-article ul {
+  list-style: disc;
+}
+.prose-article ol {
+  list-style: decimal;
+}
+.prose-article li::marker {
+  color: var(--muted);
+}
+.prose-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.5rem 0;
+  font-size: 0.875rem;
+  display: block;
+  overflow-x: auto;
+}
+.prose-article thead tr {
+  border-bottom: 1px solid var(--card-border);
+}
+.prose-article th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--foreground);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.prose-article td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--card-border) 60%, transparent);
+  vertical-align: top;
+}
+.prose-article a {
+  color: var(--accent-blue);
+}
+.prose-article a:hover {
+  text-decoration: underline;
+}
+.prose-article code {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
 /* Gradient text */
 .gradient-text-red {
   background: linear-gradient(135deg, #ff3b3b, #ff8a3b);

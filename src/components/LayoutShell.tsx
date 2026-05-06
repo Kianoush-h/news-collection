@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import CookieBanner from "./CookieBanner";
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
         <Header onMenuToggle={toggleMenu} />
         <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
       </div>
+      <CookieBanner />
     </>
   );
 }

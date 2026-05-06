@@ -1,9 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useSyncExternalStore } from "react";
+import Link from "next/link";
 import { useLiveData } from "@/hooks/useLiveData";
 import ShareButton, { ShareRow } from "@/components/ShareButton";
-import AdsterraBanner from "@/components/AdsterraBanner";
+import { articles } from "@/lib/articles";
+
+// Cached snapshot — getClientTime MUST return the same value across calls
+// until the store actually changes, otherwise useSyncExternalStore loops forever.
+let cachedNow = typeof window !== "undefined" ? Date.now() : 0;
+
+const subscribeClock = (cb: () => void) => {
+  const id = setInterval(() => {
+    cachedNow = Date.now();
+    cb();
+  }, 1000);
+  return () => clearInterval(id);
+};
+const getClientTime = () => cachedNow;
+const getServerTime = () => 0;
 
 interface BlogPost {
   id: string;
@@ -23,6 +38,10 @@ export default function BlogPage() {
   const { data, loading, refresh, lastUpdated } = useLiveData<NewsResponse>("/api/news", 180000);
   const posts = data?.blog ?? [];
 
+  // Tick once a second so relative timestamps and the countdown re-render
+  // without calling Date.now() during render (impure).
+  const now = useSyncExternalStore(subscribeClock, getClientTime, getServerTime);
+
   const categoryStyle = (cat: string) => {
     switch (cat) {
       case "breaking": return "bg-accent-red/15 text-accent-red";
@@ -34,8 +53,9 @@ export default function BlogPage() {
   };
 
   const formatTime = (iso: string) => {
+    if (now === 0) return "";
     const d = new Date(iso);
-    const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+    const diff = Math.floor((now - d.getTime()) / 1000);
     if (diff < 60) return "Just now";
     if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
@@ -43,8 +63,8 @@ export default function BlogPage() {
   };
 
   const formatCountdown = () => {
-    if (!lastUpdated) return "—";
-    const elapsed = Math.floor((Date.now() - lastUpdated.getTime()) / 1000);
+    if (!lastUpdated || now === 0) return "—";
+    const elapsed = Math.floor((now - lastUpdated.getTime()) / 1000);
     const remaining = Math.max(0, 180 - elapsed);
     const m = Math.floor(remaining / 60);
     const s = remaining % 60;
@@ -90,6 +110,41 @@ export default function BlogPage() {
         </div>
       </div>
 
+      {/* Featured evergreen articles */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold tracking-wide">
+            Featured Explainers
+          </h2>
+          <span className="text-[10px] text-muted uppercase tracking-widest">
+            Updated regularly
+          </span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {articles.map((a) => (
+            <Link
+              key={a.slug}
+              href={`/blog/${a.slug}`}
+              className="glass-card p-4 hover:border-accent-blue/40 transition-colors group"
+            >
+              <div className="flex items-center gap-2 mb-2 text-[10px] text-muted uppercase tracking-widest">
+                <span className="text-accent-blue font-semibold">
+                  {a.category}
+                </span>
+                <span>·</span>
+                <span>{a.readingTime}</span>
+              </div>
+              <h3 className="text-sm font-bold leading-snug mb-2 group-hover:text-accent-blue transition-colors">
+                {a.title}
+              </h3>
+              <p className="text-xs text-muted line-clamp-3 leading-relaxed">
+                {a.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Articles count */}
       <div className="text-xs text-muted">
         {loading && posts.length === 0 ? "Loading articles..." : `${posts.length} articles from global sources`}
@@ -103,12 +158,8 @@ export default function BlogPage() {
             Fetching live articles from GDELT...
           </div>
         )}
-        {posts.map((post, idx) => (
+        {posts.map((post) => (
           <React.Fragment key={post.id}>
-          {/* Ad after every 3rd article */}
-          {idx > 0 && idx % 3 === 0 && (
-            <AdsterraBanner className="my-2" />
-          )}
           <article
             className="glass-card overflow-hidden"
           >

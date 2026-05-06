@@ -4,7 +4,17 @@ export const alt = "Crisis Watch — Live Iran-US War Dashboard";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const CONFLICT_START = "2026-02-28";
+
+function dayOfConflict(): number {
+  return Math.max(
+    1,
+    Math.ceil((Date.now() - new Date(CONFLICT_START).getTime()) / 86400000),
+  );
+}
+
 export default async function OGImage() {
+  const day = dayOfConflict();
   return new ImageResponse(
     (
       <div
@@ -200,16 +210,9 @@ export default async function OGImage() {
           >
             <StatBox
               label="Day of Conflict"
-              value="38"
+              value={`${day}`}
               color="#ff3b3b"
               accent="rgba(255,59,59,0.08)"
-            />
-            <StatBox
-              label="Brent Crude"
-              value="$142.38"
-              change="+2.3%"
-              color="#ffb800"
-              accent="rgba(255,184,0,0.08)"
             />
             <StatBox
               label="Strait Status"
@@ -218,9 +221,14 @@ export default async function OGImage() {
               accent="rgba(255,59,59,0.08)"
             />
             <StatBox
-              label="US Gas Avg"
-              value="$5.89"
-              change="+$0.12"
+              label="Coverage"
+              value="LIVE"
+              color="#ffb800"
+              accent="rgba(255,184,0,0.08)"
+            />
+            <StatBox
+              label="Refresh"
+              value="60s"
               color="#ffb800"
               accent="rgba(255,184,0,0.08)"
             />

@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import StatCard from "@/components/StatCard";
 import LiveChart from "@/components/LiveChart";
 import { IconOil, IconFlame, IconGold } from "@/components/Icons";
 import ShareButton from "@/components/ShareButton";
-import AdsterraBanner from "@/components/AdsterraBanner";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 
 interface PricesData {
@@ -53,6 +53,36 @@ export default function OilEnergyPage() {
         </div>
         <ShareButton title="Oil & Energy Crisis Dashboard — Crude, Gas, Stocks Live" variant="pill" />
       </div>
+
+      {/* Static intro — crawler-readable summary */}
+      <section className="glass-card p-5 text-sm leading-relaxed text-foreground/80">
+        <p>
+          Brent crude is the global price benchmark and the cleanest single
+          read on the conflict&apos;s economic toll. This dashboard tracks
+          Brent and WTI crude, RBOB gasoline, natural gas, gold, and the
+          most relevant defense and integrated-energy equities in real time.
+          For why these markets are moving, see the{" "}
+          <Link href="/hormuz" className="text-accent-blue hover:underline">
+            Strait of Hormuz tracker
+          </Link>{" "}
+          and the{" "}
+          <Link href="/conflict-map" className="text-accent-blue hover:underline">
+            conflict timeline
+          </Link>
+          . For consumer-side effects, see the{" "}
+          <Link href="/impact" className="text-accent-blue hover:underline">
+            War Impact dashboard
+          </Link>
+          ; for the gas-pump pass-through mechanics in detail, read{" "}
+          <Link
+            href="/blog/how-iran-us-war-affects-gas-prices"
+            className="text-accent-blue hover:underline"
+          >
+            How the Iran-US War Affects Gas Prices at the Pump
+          </Link>
+          .
+        </p>
+      </section>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -119,9 +149,6 @@ export default function OilEnergyPage() {
           height={200}
         />
       </div>
-
-      {/* Ad — between charts and stocks */}
-      <AdsterraBanner className="my-2" />
 
       {/* Energy & Defense Stocks — LIVE */}
       <div className="glass-card overflow-hidden">

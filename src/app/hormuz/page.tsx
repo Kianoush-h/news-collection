@@ -1,11 +1,30 @@
 "use client";
 
+import Link from "next/link";
 import StatCard from "@/components/StatCard";
 import LiveChart from "@/components/LiveChart";
 import { IconOil, IconShip, IconAnchor, IconClock } from "@/components/Icons";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import ShareButton from "@/components/ShareButton";
 import HormuzMap from "@/components/HormuzMap";
+
+const hormuzPlaceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Place",
+  name: "Strait of Hormuz",
+  description:
+    "The Strait of Hormuz is a 21-mile-wide waterway between Iran and Oman through which roughly 20% of the world's oil and a third of seaborne LNG transit. As of 2026 the strait is under IRGC naval blockade.",
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 26.5667,
+    longitude: 56.25,
+  },
+  containedInPlace: {
+    "@type": "Place",
+    name: "Persian Gulf",
+  },
+  url: "https://crisiswatch.ca/hormuz",
+};
 
 interface MetaData {
   dayOfBlockade: number;
@@ -24,6 +43,12 @@ export default function HormuzPage() {
 
   return (
     <div className="space-y-6 animate-slide-in">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(hormuzPlaceJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* Page Header */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
@@ -36,6 +61,36 @@ export default function HormuzPage() {
         </div>
         <ShareButton title="Strait of Hormuz Live Tracker — Ship Blockade & Oil Flow" variant="pill" />
       </div>
+
+      {/* Static intro — crawler-readable summary */}
+      <section className="glass-card p-5 text-sm leading-relaxed text-foreground/80">
+        <p>
+          The Strait of Hormuz is the 21-mile-wide waterway through which
+          roughly 20% of the world&apos;s oil and about a third of seaborne LNG
+          transit. As of 2026 the strait is under IRGC naval blockade,
+          forcing major oil tankers around the Cape of Good Hope and adding
+          roughly 14 days to Asia-Europe routes. For the underlying
+          geography and history, see our explainer on{" "}
+          <Link
+            href="/blog/strait-of-hormuz-oil-chokepoint"
+            className="text-accent-blue hover:underline"
+          >
+            why the Strait is the world&apos;s most critical oil chokepoint
+          </Link>{" "}
+          and our reference page on{" "}
+          <Link
+            href="/blog/world-oil-percentage-strait-of-hormuz"
+            className="text-accent-blue hover:underline"
+          >
+            what percentage of world oil passes through Hormuz
+          </Link>
+          . For the resulting market move, see the{" "}
+          <Link href="/oil-energy" className="text-accent-blue hover:underline">
+            Oil &amp; Energy dashboard
+          </Link>
+          .
+        </p>
+      </section>
 
       {/* Blockade Status Banner */}
       <div className="relative overflow-hidden rounded-2xl border border-accent-red/20">

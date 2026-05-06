@@ -81,13 +81,19 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* Google tag (gtag.js) */}
+        {/* Google tag (gtag.js) — analytics blocked until the user accepts via the consent banner */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQPH98DCQ5" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied'
+  });
   gtag('js', new Date());
   gtag('config', 'G-SQPH98DCQ5');
 `,
@@ -98,6 +104,44 @@ export default function RootLayout({
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         />
         {/* Structured Data for Google Rich Results */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Crisis Watch",
+              url: "https://crisiswatch.ca",
+              logo: "https://crisiswatch.ca/icon",
+              email: "contact@crisiswatch.ca",
+              description:
+                "Real-time conflict and crisis dashboard aggregating data from Reuters, AP, GDELT, Al Jazeera, Yahoo Finance, and MarineTraffic.",
+              sameAs: [],
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Crisis Watch",
+              url: "https://crisiswatch.ca",
+              description:
+                "Live Iran-US conflict dashboard with real-time data on oil prices, Strait of Hormuz, gas prices, war timeline, and global impact.",
+              publisher: { "@type": "Organization", name: "Crisis Watch" },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "https://crisiswatch.ca/blog?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -118,7 +162,26 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: "Crisis Watch",
               },
-            }),
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: "Crisis Watch Site Navigation",
+              itemListElement: [
+                { "@type": "SiteNavigationElement", position: 1, name: "Overview", url: "https://crisiswatch.ca/" },
+                { "@type": "SiteNavigationElement", position: 2, name: "Strait of Hormuz", url: "https://crisiswatch.ca/hormuz" },
+                { "@type": "SiteNavigationElement", position: 3, name: "War Impact", url: "https://crisiswatch.ca/impact" },
+                { "@type": "SiteNavigationElement", position: 4, name: "Conflict Map", url: "https://crisiswatch.ca/conflict-map" },
+                { "@type": "SiteNavigationElement", position: 5, name: "Oil & Energy", url: "https://crisiswatch.ca/oil-energy" },
+                { "@type": "SiteNavigationElement", position: 6, name: "Live Blog", url: "https://crisiswatch.ca/blog" },
+                { "@type": "SiteNavigationElement", position: 7, name: "About", url: "https://crisiswatch.ca/about" },
+              ],
+            }).replace(/</g, "\\u003c"),
           }}
         />
         <script
@@ -145,7 +208,7 @@ export default function RootLayout({
                   datePublished: "2026-04-07T10:00:00Z",
                 },
               ],
-            }),
+            }).replace(/</g, "\\u003c"),
           }}
         />
       </head>

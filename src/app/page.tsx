@@ -8,7 +8,7 @@ import ShareButton from "@/components/ShareButton";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AdsterraBanner from "@/components/AdsterraBanner";
+import { articles } from "@/lib/articles";
 
 interface PricesData {
   oil: { brent: { price: number; change: number; changePct: number }; wti: { price: number } };
@@ -105,9 +105,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Ad — below breaking banner */}
-      <AdsterraBanner className="my-2" />
-
       {/* Key Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -203,6 +200,54 @@ export default function Home() {
           iconColor="text-accent-green"
         />
       </div>
+
+      {/* Explainer articles — crawler-readable evergreen content links */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold tracking-wide">Background &amp; Explainers</h2>
+          <Link
+            href="/blog"
+            className="text-xs text-muted hover:text-foreground transition-colors"
+          >
+            All articles →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {articles.map((a) => (
+            <Link
+              key={a.slug}
+              href={`/blog/${a.slug}`}
+              className="glass-card p-4 hover:border-accent-blue/40 transition-colors group"
+            >
+              <div className="flex items-center gap-2 mb-2 text-[10px] text-muted uppercase tracking-widest">
+                <span className="text-accent-blue font-semibold">{a.category}</span>
+                <span>·</span>
+                <span>{a.readingTime}</span>
+              </div>
+              <h3 className="text-sm font-bold leading-snug mb-2 group-hover:text-accent-blue transition-colors">
+                {a.title}
+              </h3>
+              <p className="text-xs text-muted line-clamp-3 leading-relaxed">
+                {a.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* About link — credibility signal for first-time visitors */}
+      <section className="glass-card p-5 text-sm leading-relaxed text-foreground/75">
+        <p>
+          Crisis Watch aggregates real-time conflict data from Reuters, AP,
+          GDELT, Al Jazeera, Yahoo Finance, NASA FIRMS, and MarineTraffic. We
+          are independently operated and do not accept payment for editorial
+          coverage. Read about our{" "}
+          <Link href="/about" className="text-accent-blue hover:underline">
+            methodology, data sources, and editorial policy
+          </Link>
+          .
+        </p>
+      </section>
     </div>
   );
 }

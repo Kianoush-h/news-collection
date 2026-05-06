@@ -28,8 +28,7 @@ export default function PrivacyPage() {
             <strong className="text-foreground">Usage data</strong> &mdash;
             pages visited, time on site, referral source, browser type, device
             type, and approximate geographic location (country/region level).
-            This is collected automatically via Google Analytics and our
-            advertising partner Adsterra.
+            This is collected automatically via Google Analytics.
           </li>
           <li>
             <strong className="text-foreground">ZIP / postal code</strong>{" "}
@@ -45,7 +44,6 @@ export default function PrivacyPage() {
           <li>Understand which content and features are most useful.</li>
           <li>Monitor site performance and diagnose technical issues.</li>
           <li>Improve the accuracy and relevance of our dashboards.</li>
-          <li>Display relevant advertisements to support the operation of this site.</li>
         </ul>
         <p className="mt-3">
           We do <strong className="text-foreground">not</strong> sell, rent, or
@@ -70,13 +68,6 @@ export default function PrivacyPage() {
                 <td className="py-2 pr-4">Google</td>
                 <td className="py-2">Anonymized site usage analytics</td>
               </tr>
-              <tr className="border-b border-card-border/50">
-                <td className="py-2 pr-4">Adsterra</td>
-                <td className="py-2 pr-4">Adsterra</td>
-                <td className="py-2">
-                  Native banner advertisements to support the site
-                </td>
-              </tr>
               <tr>
                 <td className="py-2 pr-4">Essential cookies</td>
                 <td className="py-2 pr-4">Crisis Watch</td>
@@ -93,53 +84,7 @@ export default function PrivacyPage() {
         </p>
       </Section>
 
-      <Section title="4. Third-Party Advertising">
-        <p>
-          We use <strong className="text-foreground">Adsterra</strong> to
-          display native banner advertisements. Adsterra and its advertising
-          partners may use cookies and similar technologies to serve ads based
-          on your browsing behavior. Adsterra may collect anonymized usage data
-          to improve ad relevance.
-        </p>
-        <p className="mt-3">
-          You can manage your ad preferences or opt out of personalized
-          advertising by visiting:
-        </p>
-        <ul className="list-disc pl-5 space-y-1.5 mt-2">
-          <li>
-            <a
-              href="https://adsterra.com/privacy-policy/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent-blue hover:underline"
-            >
-              Adsterra Privacy Policy
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://optout.aboutads.info/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent-blue hover:underline"
-            >
-              Digital Advertising Alliance Opt-Out
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://optout.networkadvertising.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent-blue hover:underline"
-            >
-              Network Advertising Initiative Opt-Out
-            </a>
-          </li>
-        </ul>
-      </Section>
-
-      <Section title="5. Third-Party Data Sources">
+      <Section title="4. Third-Party Data Sources">
         <p>
           Our dashboards aggregate publicly available data from third-party
           sources including Reuters, Associated Press, GDELT, Yahoo Finance, and
@@ -149,16 +94,15 @@ export default function PrivacyPage() {
         </p>
       </Section>
 
-      <Section title="6. Data Retention">
+      <Section title="5. Data Retention">
         <p>
           Google Analytics data is retained for 14 months and is then
-          automatically deleted. Adsterra retains anonymized data in
-          accordance with their privacy policy. We do not maintain any personal
-          data databases of our own.
+          automatically deleted. We do not maintain any personal data
+          databases of our own.
         </p>
       </Section>
 
-      <Section title="7. Children&apos;s Privacy">
+      <Section title="6. Children&apos;s Privacy">
         <p>
           Crisis Watch is not directed at children under 13. We do not knowingly
           collect personal information from children. If you believe a child has
@@ -166,18 +110,17 @@ export default function PrivacyPage() {
         </p>
       </Section>
 
-      <Section title="8. Your Rights">
+      <Section title="7. Your Rights">
         <p>Depending on your jurisdiction, you may have the right to:</p>
         <ul className="list-disc pl-5 space-y-1.5 mt-3">
           <li>Access the personal data we hold about you.</li>
           <li>Request deletion of your data.</li>
-          <li>Opt out of personalized advertising (see links in Section 4).</li>
           <li>Opt out of analytics tracking (via browser settings).</li>
           <li>Lodge a complaint with a data protection authority.</li>
         </ul>
       </Section>
 
-      <Section title="9. Changes to This Policy">
+      <Section title="8. Changes to This Policy">
         <p>
           We may update this Privacy Policy from time to time. Changes will be
           posted on this page with an updated &quot;Last updated&quot; date. Your
@@ -186,7 +129,7 @@ export default function PrivacyPage() {
         </p>
       </Section>
 
-      <Section title="10. Contact Us">
+      <Section title="9. Contact Us">
         <p>
           If you have questions about this Privacy Policy, you can reach us at:
         </p>
