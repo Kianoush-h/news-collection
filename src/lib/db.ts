@@ -23,14 +23,23 @@ interface DbState {
   lastRefresh: number;
 }
 
-let state: DbState = { store: {}, lastRefresh: 0 };
-let refreshing = false;
-
-// Use globalThis to prevent duplicate intervals across hot reloads
+// Next.js can bundle this module into multiple per-route compiled outputs.
+// Each bundle would otherwise get its own copy of `state`, so the refresh
+// loop running in one bundle would write data the API routes (in another
+// bundle) can't read. Pin everything to globalThis so every module copy
+// shares the same store, lastRefresh timestamp, in-flight lock, and timer.
 const globalForDb = globalThis as unknown as {
+  __dbState?: DbState;
+  __dbRefreshing?: boolean;
   __dbStarted?: boolean;
   __dbTimer?: ReturnType<typeof setInterval>;
 };
+
+if (!globalForDb.__dbState) {
+  globalForDb.__dbState = { store: {}, lastRefresh: 0 };
+}
+
+const state: DbState = globalForDb.__dbState;
 
 // ─── Disk persistence ────────────────────────────────────────────────
 
@@ -39,9 +48,12 @@ function loadFromDisk(): void {
     if (fs.existsSync(DB_PATH)) {
       const raw = fs.readFileSync(DB_PATH, "utf-8");
       const parsed = JSON.parse(raw) as DbState;
-      state = parsed;
+      // Mutate the shared state object in place so other module copies
+      // already holding a reference to it see the loaded data.
+      state.store = parsed.store;
+      state.lastRefresh = parsed.lastRefresh;
       console.log(
-        `[DB] Loaded from disk — ${Object.keys(state.store).length} keys, last refresh: ${new Date(state.lastRefresh).toISOString()}`
+        `[DB] Loaded from disk — ${Object.keys(state.store).length} keys, last refresh: ${new Date(state.lastRefresh).toISOString()}`,
       );
     }
   } catch (e) {
@@ -75,8 +87,8 @@ export function dbLastRefresh(): number {
 // ─── Refresh all data from external APIs ─────────────────────────────
 
 async function refreshAll(): Promise<void> {
-  if (refreshing) return;
-  refreshing = true;
+  if (globalForDb.__dbRefreshing) return;
+  globalForDb.__dbRefreshing = true;
   const start = Date.now();
 
   try {
@@ -149,7 +161,7 @@ async function refreshAll(): Promise<void> {
   } catch (e) {
     console.error("[DB] Refresh error:", e);
   } finally {
-    refreshing = false;
+    globalForDb.__dbRefreshing = false;
   }
 }
 
