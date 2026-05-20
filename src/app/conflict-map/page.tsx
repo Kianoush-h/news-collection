@@ -6,6 +6,7 @@ import ShareButton from "@/components/ShareButton";
 import { IconCalendar, IconTarget, IconMissile, IconDove } from "@/components/Icons";
 import { useLiveData } from "@/hooks/useLiveData";
 import dynamic from "next/dynamic";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const conflictEventJsonLd = {
   "@context": "https://schema.org",
@@ -75,6 +76,7 @@ export default function ConflictMapPage() {
           __html: JSON.stringify(conflictEventJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+      <Breadcrumbs items={[{ name: "Conflict Map", href: "/conflict-map" }]} />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">

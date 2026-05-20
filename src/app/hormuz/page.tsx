@@ -7,6 +7,7 @@ import { IconOil, IconShip, IconAnchor, IconClock } from "@/components/Icons";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
 import ShareButton from "@/components/ShareButton";
 import HormuzMap from "@/components/HormuzMap";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const hormuzPlaceJsonLd = {
   "@context": "https://schema.org",
@@ -49,6 +50,7 @@ export default function HormuzPage() {
           __html: JSON.stringify(hormuzPlaceJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+      <Breadcrumbs items={[{ name: "Strait of Hormuz", href: "/hormuz" }]} />
       {/* Page Header */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">

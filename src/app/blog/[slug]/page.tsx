@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { articles, getArticle } from "@/lib/articles";
 import { alternates, openGraph, twitter, SITE_URL } from "@/lib/seo";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -77,31 +78,6 @@ export default async function ArticlePage({ params }: PageProps) {
     keywords: article.keywords.join(", "),
   };
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Crisis Watch",
-        item: "https://crisiswatch.ca",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Live Blog",
-        item: "https://crisiswatch.ca/blog",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: article.title,
-        item: url,
-      },
-    ],
-  };
-
   const otherArticles = articles.filter((a) => a.slug !== article.slug);
 
   return (
@@ -112,28 +88,29 @@ export default async function ArticlePage({ params }: PageProps) {
           __html: JSON.stringify(newsArticleJsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
 
-      {/* Breadcrumb */}
-      <nav
-        aria-label="Breadcrumb"
-        className="text-xs text-muted mb-6 flex items-center gap-2"
-      >
-        <Link href="/" className="hover:text-foreground transition-colors">
-          Home
-        </Link>
-        <span>/</span>
-        <Link href="/blog" className="hover:text-foreground transition-colors">
-          Live Blog
-        </Link>
-        <span>/</span>
-        <span className="text-foreground/70 truncate">{article.title}</span>
-      </nav>
+      <div className="mb-6">
+        <Breadcrumbs
+          items={[
+            { name: "Live Blog", href: "/blog" },
+            { name: article.title, href: `/blog/${article.slug}` },
+          ]}
+        />
+      </div>
+
+      {/* Hero image — also the og:image and twitter:image for this article */}
+      <figure className="mb-8 rounded-2xl overflow-hidden border border-card-border">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`/blog/${article.slug}/opengraph-image`}
+          alt={`${article.title} — Crisis Watch hero illustration`}
+          width={1200}
+          height={630}
+          loading="eager"
+          decoding="async"
+          className="w-full h-auto block"
+        />
+      </figure>
 
       <header className="space-y-4 mb-8">
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted font-semibold">

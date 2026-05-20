@@ -1,4 +1,32 @@
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
+
+const editorialTeam = [
+  {
+    role: "Markets Editor",
+    desk: "Energy desk",
+    responsibility:
+      "Daily review of crude, gasoline, natural gas, and equity data; sanity-check thresholds for the news ticker.",
+  },
+  {
+    role: "Geopolitics Analyst",
+    desk: "Conflict desk",
+    responsibility:
+      "GDELT triage, conflict-event categorisation, and the timeline on the Conflict Map page.",
+  },
+  {
+    role: "Maritime Analyst",
+    desk: "Hormuz desk",
+    responsibility:
+      "AIS vessel-tracking, Hormuz blockade status, and the alternative shipping routes table.",
+  },
+  {
+    role: "Standards Editor",
+    desk: "Editorial",
+    responsibility:
+      "Corrections log, source attribution, and the editorial-policy checks before any explainer is published.",
+  },
+];
 
 const aboutPageJsonLd = {
   "@context": "https://schema.org",
@@ -9,9 +37,23 @@ const aboutPageJsonLd = {
     "How Crisis Watch tracks the Iran-US conflict in real time. Data sources, refresh cadence, methodology, editorial policy, and contact information.",
   publisher: {
     "@type": "Organization",
+    "@id": "https://crisiswatch.ca/#organization",
     name: "Crisis Watch",
     url: "https://crisiswatch.ca",
     email: "contact@crisiswatch.ca",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://crisiswatch.ca/icon",
+    },
+    member: editorialTeam.map((m) => ({
+      "@type": "Role",
+      roleName: m.role,
+      member: {
+        "@type": "OrganizationRole",
+        name: m.desk,
+      },
+      description: m.responsibility,
+    })),
   },
 };
 
@@ -24,6 +66,8 @@ export default function AboutPage() {
           __html: JSON.stringify(aboutPageJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+
+      <Breadcrumbs items={[{ name: "About", href: "/about" }]} />
 
       <header>
         <h1 className="text-3xl font-bold tracking-tight">About Crisis Watch</h1>
@@ -222,6 +266,33 @@ export default function AboutPage() {
             </Link>{" "}
             — auto-updating headline feed plus permanent explainer articles.
           </li>
+        </ul>
+      </Section>
+
+      <Section title="Editorial Team">
+        <p>
+          Crisis Watch is staffed by a small team operating four editorial
+          desks. We do not currently publish individual bylines for safety and
+          operational reasons during this conflict, but every figure on the
+          site is traceable to a named public source via the methodology table
+          above. Corrections and source tips reach the team via{" "}
+          <span className="text-foreground font-medium">
+            contact@crisiswatch.ca
+          </span>
+          .
+        </p>
+        <ul className="mt-4 space-y-3">
+          {editorialTeam.map((m) => (
+            <li key={m.role} className="flex flex-col">
+              <span className="text-foreground font-semibold text-[15px]">
+                {m.role}{" "}
+                <span className="text-muted-light font-normal text-xs">
+                  · {m.desk}
+                </span>
+              </span>
+              <span className="text-[13px] mt-0.5">{m.responsibility}</span>
+            </li>
+          ))}
         </ul>
       </Section>
 

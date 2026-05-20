@@ -1,6 +1,9 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
+
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-10 animate-slide-in">
+      <Breadcrumbs items={[{ name: "Privacy Policy", href: "/privacy" }]} />
       {/* Page heading */}
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Privacy Policy</h1>

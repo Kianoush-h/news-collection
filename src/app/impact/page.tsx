@@ -7,6 +7,7 @@ import { IconGas, IconPlane, IconPackage, IconBarChart } from "@/components/Icon
 import ImpactCalculator from "@/components/ImpactCalculator";
 import ShareButton from "@/components/ShareButton";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const impactFaq: { q: string; a: string }[] = [
   {
@@ -86,6 +87,7 @@ export default function ImpactPage() {
           __html: JSON.stringify(impactFaqJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+      <Breadcrumbs items={[{ name: "War Impact", href: "/impact" }]} />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">

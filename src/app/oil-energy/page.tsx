@@ -6,6 +6,7 @@ import LiveChart from "@/components/LiveChart";
 import { IconOil, IconFlame, IconGold } from "@/components/Icons";
 import ShareButton from "@/components/ShareButton";
 import { useLiveData, useFetchOnce } from "@/hooks/useLiveData";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface PricesData {
   oil: { brent: { price: number; change: number; changePct: number }; wti: { price: number; change: number; changePct: number } };
@@ -42,6 +43,7 @@ export default function OilEnergyPage() {
 
   return (
     <div className="space-y-6 animate-slide-in">
+      <Breadcrumbs items={[{ name: "Oil & Energy", href: "/oil-energy" }]} />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
