@@ -27,6 +27,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Pre-create the runtime cache directory the in-memory store writes to.
+# Without this, db.ts's fs.mkdirSync('/app/.data') fails with EACCES under
+# the unprivileged `nextjs` user and disk persistence is silently disabled.
+RUN mkdir -p /app/.data && chown -R nextjs:nodejs /app/.data
+
 USER nextjs
 EXPOSE 3000
 
