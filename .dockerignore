@@ -4,4 +4,19 @@ node_modules
 .gitignore
 README.md
 AGENTS.md
+CLAUDE.md
 *.log
+
+# Local state — must not ship inside the image
+.data
+.claude
+.env*
+.vercel
+
+# TypeScript / Next.js scratch
+*.tsbuildinfo
+next-env.d.ts
+
+# Docs / scratchpads
+docker commands.txt
+*.pdf
