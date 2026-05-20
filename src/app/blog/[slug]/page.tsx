@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { articles, getArticle } from "@/lib/articles";
+import { alternates, openGraph, twitter, SITE_URL } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -11,31 +12,36 @@ export async function generateStaticParams() {
   return articles.map((a) => ({ slug: a.slug }));
 }
 
+// Strip the markdown-style em-dash subtitle so the meta description stays
+// inside Google's 155-160 character display window.
+function shortDescription(text: string, max = 155): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return cut.slice(0, lastSpace > max - 25 ? lastSpace : max).trimEnd() + "…";
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) return { title: "Article Not Found" };
 
-  const url = `https://crisiswatch.ca/blog/${article.slug}`;
+  const path = `/blog/${article.slug}`;
+  const desc = shortDescription(article.description);
+  const og = openGraph({ title: article.title, description: desc, path, type: "article" });
   return {
     title: article.title,
-    description: article.description,
+    description: desc,
     keywords: article.keywords,
-    alternates: { canonical: `/blog/${article.slug}` },
+    alternates: alternates(path),
     openGraph: {
+      ...og,
       type: "article",
-      url,
-      title: article.title,
-      description: article.description,
       publishedTime: article.datePublished,
       modifiedTime: article.dateModified,
-      authors: ["Crisis Watch Editorial Team"],
+      authors: [`${SITE_URL}/about`],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.description,
-    },
+    twitter: twitter({ title: article.title, description: desc }),
   };
 }
 

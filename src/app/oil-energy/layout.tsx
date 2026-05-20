@@ -1,9 +1,13 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { alternates, openGraph, twitter } from "@/lib/seo";
+
+const title = "Oil & Energy — Crude, Gas, Stocks Live";
+const description =
+  "Live oil and energy markets: Brent and WTI crude, natural gas, gold, defense and energy stocks, commodities, and alternative shipping routes.";
 
 export const metadata: Metadata = {
-  title: "Oil & Energy Crisis Dashboard — Crude, Gas, Stocks Live",
-  description:
-    "Live oil and energy market data. Brent crude at $142, natural gas, gold prices, energy & defense stock performance, commodity prices, and alternative shipping routes.",
+  title,
+  description,
   keywords: [
     "oil price today",
     "crude oil price live",
@@ -17,11 +21,9 @@ export const metadata: Metadata = {
     "ExxonMobil stock",
     "Lockheed Martin stock",
   ],
-  openGraph: {
-    title: "Oil & Energy Crisis Dashboard — Crisis Watch",
-    description:
-      "Live: Brent $142/barrel, gas $5.89/gal. Energy & defense stocks, commodity prices, shipping route analysis.",
-  },
+  alternates: alternates("/oil-energy"),
+  openGraph: openGraph({ title, description, path: "/oil-energy" }),
+  twitter: twitter({ title, description }),
 };
 
 export default function OilEnergyLayout({ children }: { children: React.ReactNode }) {

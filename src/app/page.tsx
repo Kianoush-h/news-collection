@@ -60,8 +60,16 @@ export default function Home() {
 
   return (
     <div className="space-y-6 animate-slide-in">
-      {/* Page Share */}
-      <div className="flex justify-end">
+      {/* Page header + share */}
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+            <span className="gradient-text-red">Live Iran-US War</span> Dashboard
+          </h1>
+          <p className="text-muted text-sm mt-1">
+            Oil prices, Strait of Hormuz status, gas prices, and global market impact
+          </p>
+        </div>
         <ShareButton
           title="Crisis Watch — Live Iran-US War Dashboard"
           text="Real-time dashboard tracking the Iran-US conflict: oil prices, Strait of Hormuz, gas prices, and more."

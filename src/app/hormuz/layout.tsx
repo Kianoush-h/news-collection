@@ -1,9 +1,13 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { alternates, openGraph, twitter } from "@/lib/seo";
+
+const title = "Strait of Hormuz Blockade Live Tracker";
+const description =
+  "Live tracker of the Strait of Hormuz blockade: ship positions, oil flow disruption, reroute paths via the Cape of Good Hope, and IRGC naval status.";
 
 export const metadata: Metadata = {
-  title: "Strait of Hormuz Live Tracker — Ship Blockade & Oil Flow",
-  description:
-    "Live tracking of the Strait of Hormuz blockade. See ship positions, oil flow data, reroute paths via Cape of Good Hope, and IRGC naval positions. Day 36 of the blockade.",
+  title,
+  description,
   keywords: [
     "Strait of Hormuz blockade",
     "Hormuz ship tracking",
@@ -13,11 +17,9 @@ export const metadata: Metadata = {
     "shipping reroute Cape of Good Hope",
     "Hormuz live map",
   ],
-  openGraph: {
-    title: "Strait of Hormuz Live Tracker — Crisis Watch",
-    description:
-      "Live map: ship positions, blockade zones, oil flow data. Day 36 of the IRGC blockade of the world's most critical oil chokepoint.",
-  },
+  alternates: alternates("/hormuz"),
+  openGraph: openGraph({ title, description, path: "/hormuz" }),
+  twitter: twitter({ title, description }),
 };
 
 export default function HormuzLayout({ children }: { children: React.ReactNode }) {

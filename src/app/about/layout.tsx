@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
+import { alternates, openGraph, twitter } from "@/lib/seo";
+
+const title = "About — Methodology & Data Sources";
+const description =
+  "How Crisis Watch tracks the Iran-US conflict in real time. Data sources, refresh cadence, editorial policy, and contact information.";
 
 export const metadata: Metadata = {
-  title: "About Crisis Watch — Methodology, Sources & Editorial Policy",
-  description:
-    "Crisis Watch aggregates real-time conflict data from Reuters, AP, GDELT, Al Jazeera, Yahoo Finance, and MarineTraffic. Read our methodology, update cadence, editorial policy, and contact information.",
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: "About Crisis Watch — Methodology & Sources",
-    description:
-      "How Crisis Watch tracks the Iran-US conflict in real time. Data sources, refresh cadence, and editorial policy.",
-  },
+  title,
+  description,
+  keywords: [
+    "Crisis Watch methodology",
+    "Iran war data sources",
+    "conflict dashboard editorial policy",
+    "Reuters AP GDELT aggregator",
+    "Crisis Watch contact",
+  ],
+  alternates: alternates("/about"),
+  openGraph: openGraph({ title, description, path: "/about" }),
+  twitter: twitter({ title, description }),
 };
 
 export default function AboutLayout({

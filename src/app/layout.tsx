@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LayoutShell from "@/components/LayoutShell";
+import { alternates, openGraph, twitter } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,14 +14,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const homeTitle = "Crisis Watch — Live Iran-US War Dashboard";
+const homeDescription =
+  "Live dashboard tracking the Iran-US conflict in real time. Oil prices, Strait of Hormuz status, gas prices, and the daily-life impact, updated continuously.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://crisiswatch.ca"),
   title: {
-    default: "Crisis Watch — Live Iran-US War Dashboard | Real-Time Updates",
+    default: homeTitle,
     template: "%s | Crisis Watch",
   },
-  description:
-    "Live dashboard tracking the Iran-US conflict in real-time. Oil prices, Strait of Hormuz blockade status, gas prices, war timeline, and how it affects your daily life. Updated every 60 seconds.",
+  description: homeDescription,
   keywords: [
     "Iran war",
     "Iran US conflict",
@@ -40,20 +44,8 @@ export const metadata: Metadata = {
     "Iran war timeline",
     "Middle East conflict tracker",
   ],
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    title: "Crisis Watch — Live Iran-US War Dashboard",
-    description:
-      "Real-time tracking of the Iran-US conflict. Oil prices, Strait of Hormuz status, gas prices, war map, and daily life impact. Updated every 60 seconds.",
-    siteName: "Crisis Watch",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Crisis Watch — Live Iran-US War Dashboard",
-    description:
-      "Real-time tracking: oil prices, Strait of Hormuz blockade, gas prices, war map & timeline. How does the Iran-US conflict affect you?",
-  },
+  openGraph: openGraph({ title: homeTitle, description: homeDescription, path: "/" }),
+  twitter: twitter({ title: homeTitle, description: homeDescription }),
   robots: {
     index: true,
     follow: true,
@@ -65,14 +57,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: "/",
-    types: {
-      "application/rss+xml": [
-        { url: "/feed.xml", title: "Crisis Watch — Live Iran-US Conflict Updates" },
-      ],
-    },
-  },
+  alternates: alternates("/"),
 };
 
 export default function RootLayout({
@@ -185,33 +170,6 @@ export default function RootLayout({
                 { "@type": "SiteNavigationElement", position: 5, name: "Oil & Energy", url: "https://crisiswatch.ca/oil-energy" },
                 { "@type": "SiteNavigationElement", position: 6, name: "Live Blog", url: "https://crisiswatch.ca/blog" },
                 { "@type": "SiteNavigationElement", position: 7, name: "About", url: "https://crisiswatch.ca/about" },
-              ],
-            }).replace(/</g, "\\u003c"),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LiveBlogPosting",
-              headline: "Iran-US Conflict Live Updates — Day 38",
-              description:
-                "Live coverage of the Iran-US war including Strait of Hormuz blockade, oil prices, and ceasefire negotiations.",
-              coverageStartTime: "2026-02-28T00:00:00Z",
-              liveBlogUpdate: [
-                {
-                  "@type": "BlogPosting",
-                  headline:
-                    "Iran rejects 45-day ceasefire, demands permanent solution",
-                  datePublished: "2026-04-06T18:00:00Z",
-                },
-                {
-                  "@type": "BlogPosting",
-                  headline:
-                    "Trump sets 8pm ET deadline for Strait of Hormuz reopening",
-                  datePublished: "2026-04-07T10:00:00Z",
-                },
               ],
             }).replace(/</g, "\\u003c"),
           }}

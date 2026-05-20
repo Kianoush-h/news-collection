@@ -1,9 +1,13 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { alternates, openGraph, twitter } from "@/lib/seo";
+
+const title = "Live Blog — Iran-US War Updates";
+const description =
+  "Auto-updating live blog covering the Iran-US conflict: breaking updates, analysis, Strait of Hormuz news, oil prices, and ceasefire talks.";
 
 export const metadata: Metadata = {
-  title: "Live Blog — Iran-US War Updates Every Few Minutes",
-  description:
-    "Auto-updating live blog covering the Iran-US conflict. New analysis, breaking updates, and expert takes every few minutes. Strait of Hormuz, oil prices, ceasefire talks, and more.",
+  title,
+  description,
   keywords: [
     "Iran war live blog",
     "Iran US conflict updates",
@@ -13,10 +17,9 @@ export const metadata: Metadata = {
     "oil prices live updates",
     "Iran war breaking news",
   ],
-  openGraph: {
-    title: "Live Blog — Iran-US War Updates | Crisis Watch",
-    description: "Auto-updating live blog. New analysis every few minutes. Breaking updates on the Iran-US conflict.",
-  },
+  alternates: alternates("/blog"),
+  openGraph: openGraph({ title, description, path: "/blog" }),
+  twitter: twitter({ title, description }),
 };
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {

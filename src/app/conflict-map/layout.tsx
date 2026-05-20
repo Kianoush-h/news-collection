@@ -1,9 +1,13 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { alternates, openGraph, twitter } from "@/lib/seo";
+
+const title = "Iran-US Conflict Live Map & Timeline";
+const description =
+  "Interactive map of the Iran-US war. Airstrikes, missile attacks, naval actions, and diplomatic events on a live map with a full conflict timeline.";
 
 export const metadata: Metadata = {
-  title: "Iran-US Conflict Live Map & Timeline — Strikes & Events",
-  description:
-    "Interactive map of the Iran-US war. See all airstrikes, missile attacks, naval actions, and diplomatic events on a live map with a full conflict timeline from Day 1.",
+  title,
+  description,
   keywords: [
     "Iran war map",
     "Iran US conflict map",
@@ -13,11 +17,9 @@ export const metadata: Metadata = {
     "Iran missile strikes",
     "war events timeline 2026",
   ],
-  openGraph: {
-    title: "Iran-US Conflict Live Map & Timeline — Crisis Watch",
-    description:
-      "Interactive map: 240+ strikes, 85+ retaliations, 3 failed ceasefires. Full timeline from Feb 28 to today.",
-  },
+  alternates: alternates("/conflict-map"),
+  openGraph: openGraph({ title, description, path: "/conflict-map" }),
+  twitter: twitter({ title, description }),
 };
 
 export default function ConflictMapLayout({ children }: { children: React.ReactNode }) {

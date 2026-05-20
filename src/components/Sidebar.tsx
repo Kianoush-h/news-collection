@@ -105,7 +105,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-accent-red animate-pulse-live" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-sm font-bold tracking-wide text-foreground">CRISIS WATCH</h1>
+              <div className="text-sm font-bold tracking-wide text-foreground" aria-label="Crisis Watch">CRISIS WATCH</div>
               <p className="text-[10px] text-muted tracking-wider uppercase">Iran-US Conflict</p>
             </div>
             {/* Close button — mobile only */}

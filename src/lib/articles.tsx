@@ -25,7 +25,7 @@ export const articles: Article[] = [
     title:
       "Strait of Hormuz: Why It's the World's Most Critical Oil Chokepoint",
     description:
-      "A definitive explainer on the Strait of Hormuz — why roughly 20% of global oil and a third of seaborne LNG passes through this 21-mile waterway, and why a closure is treated as a global economic emergency.",
+      "Why ~20% of global oil and a third of seaborne LNG passes through this 21-mile waterway, and why a closure is a global economic emergency.",
     datePublished: "2026-04-15",
     dateModified: "2026-05-04",
     readingTime: "9 min read",
@@ -158,7 +158,7 @@ export const articles: Article[] = [
     slug: "how-iran-us-war-affects-gas-prices",
     title: "How the Iran-US War Affects Gas Prices at the Pump",
     description:
-      "A practical breakdown of how the Iran-US conflict moves US gas prices — from the Brent crude shock to refinery margins to the cents-per-gallon reality at your local station.",
+      "How the Iran-US conflict moves US gas prices — from the Brent crude shock to refinery margins to the cents-per-gallon reality at the pump.",
     datePublished: "2026-04-18",
     dateModified: "2026-05-04",
     readingTime: "8 min read",
@@ -322,7 +322,7 @@ export const articles: Article[] = [
     title:
       "What Percentage of World Oil Passes Through the Strait of Hormuz?",
     description:
-      "The short answer is roughly 20% of global oil and about a third of seaborne LNG. Here is the exact breakdown by exporter, by destination, and by alternative pipeline capacity.",
+      "Roughly 20% of global oil and a third of seaborne LNG. The exact breakdown by exporter, destination, and alternative pipeline capacity.",
     datePublished: "2026-04-22",
     dateModified: "2026-05-04",
     readingTime: "6 min read",
