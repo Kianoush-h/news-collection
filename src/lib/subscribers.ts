@@ -11,10 +11,13 @@ import crypto from "crypto";
  * the address clicks the link in the confirmation email, so nobody can put
  * someone else on the list. Every email carries a one-click unsubscribe
  * link keyed by the row token, as CASL requires. Unconfirmed rows older
- * than a week are dropped.
+ * than two days are dropped.
  */
 const FILE = path.join(process.cwd(), ".data", "subscribers.json");
-const PENDING_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+// Unconfirmed rows (and their confirmation-send counters) expire after two
+// days, so a stranger burning an address's four sends only delays the real
+// owner until the row ages out, never permanently.
+const PENDING_TTL_MS = 2 * 24 * 60 * 60 * 1000;
 
 export interface Subscriber {
   email: string;
