@@ -1,8 +1,10 @@
 import { articles } from "@/lib/articles";
+import { listBriefs } from "@/lib/brief";
 
 const baseUrl = "https://crisiswatch.ca";
 
-export const dynamic = "force-static";
+// The brief list grows daily, so this is rendered per request (cached 1 h).
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const lines: string[] = [];
@@ -38,6 +40,16 @@ export async function GET() {
   lines.push(
     `- [Live blog](${baseUrl}/blog): Auto-updating headline feed from GDELT plus permanent explainer articles.`,
   );
+  lines.push("");
+
+  lines.push(`## Daily brief (new every morning, 06:00 America/Toronto)`);
+  lines.push("");
+  lines.push(
+    `- [All briefs](${baseUrl}/brief): one article per day summarising overnight developments, the oil and gas moves, the Strait of Hormuz and what to watch, with the headlines it was built from. Full text of recent briefs is in /llms-full.txt.`,
+  );
+  for (const b of listBriefs().slice(0, 7)) {
+    lines.push(`- [${b.dateLabel}: ${b.title}](${baseUrl}/brief/${b.date}): ${b.summary}`);
+  }
   lines.push("");
 
   lines.push(`## Explainers (evergreen)`);

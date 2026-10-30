@@ -154,6 +154,12 @@ async function refreshAll(): Promise<void> {
     state.lastRefresh = Date.now();
     saveToDisk();
 
+    // The daily brief is written from this store, so it runs right after a
+    // refresh. Dynamic import: brief.ts imports this module.
+    import("./brief")
+      .then((m) => m.ensureTodaysBrief())
+      .catch((e) => console.error("[DB] brief hook failed:", e instanceof Error ? e.message : e));
+
     const elapsed = ((Date.now() - start) / 1000).toFixed(1);
     console.log(
       `[DB] Refresh complete in ${elapsed}s — prices: ${!!prices}, news: ${news?.ticker?.length ?? 0} articles`

@@ -1,5 +1,8 @@
 import { dbGet, ensureStarted } from "@/lib/db";
 import { articles } from "@/lib/articles";
+import { listBriefs } from "@/lib/brief";
+
+export const dynamic = "force-dynamic";
 
 const baseUrl = "https://crisiswatch.ca";
 
@@ -32,6 +35,18 @@ export async function GET() {
   const livePosts = (news?.blog ?? []).slice(0, 30);
 
   const items: string[] = [];
+
+  for (const b of listBriefs().slice(0, 30)) {
+    const url = `${baseUrl}/brief/${b.date}`;
+    items.push(`    <item>
+      <title>${escape(`Daily brief, ${b.dateLabel}: ${b.title}`)}</title>
+      <link>${url}</link>
+      <guid isPermaLink="true">${url}</guid>
+      <pubDate>${rfc822(b.generatedAt)}</pubDate>
+      <category>Daily brief</category>
+      <description>${escape(b.summary)}</description>
+    </item>`);
+  }
 
   for (const a of articles) {
     const url = `${baseUrl}/blog/${a.slug}`;

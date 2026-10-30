@@ -1,5 +1,9 @@
 import { MetadataRoute } from "next";
 import { articles } from "@/lib/articles";
+import { listBriefs } from "@/lib/brief";
+
+// Briefs are added daily, so the sitemap is built per request.
+export const dynamic = "force-dynamic";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://crisiswatch.ca";
@@ -43,6 +47,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/brief`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/about`,
       lastModified: now,
       changeFrequency: "monthly",
@@ -81,5 +91,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...dashboards, ...articlePages];
+  const briefPages: MetadataRoute.Sitemap = listBriefs().map((b) => ({
+    url: `${baseUrl}/brief/${b.date}`,
+    lastModified: new Date(b.generatedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...dashboards, ...briefPages, ...articlePages];
 }

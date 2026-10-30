@@ -8,7 +8,7 @@ export default function PrivacyPage() {
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Privacy Policy</h1>
         <p className="mt-2 text-sm text-muted-light">
-          Effective date: April 12, 2026 &middot; Last updated: April 12, 2026
+          Effective date: April 12, 2026 &middot; Last updated: October 30, 2026
         </p>
       </header>
 
@@ -121,6 +121,22 @@ export default function PrivacyPage() {
           <li>Opt out of analytics tracking (via browser settings).</li>
           <li>Lodge a complaint with a data protection authority.</li>
         </ul>
+      </Section>
+
+      <Section title="7a. Daily Brief Email List">
+        <p>
+          If you subscribe to the daily brief, we store the email address you
+          enter, the time you subscribed, and the page you subscribed from, on
+          our own server. We use it for one purpose: sending you one brief email
+          a day. We do not add tracking pixels to those emails, we do not share
+          the list with anyone, and we do not use it for anything else.
+        </p>
+        <p className="mt-2">
+          Every email contains a one-click unsubscribe link; using it deletes
+          your address from the list immediately. You can also write to
+          contact@crisiswatch.ca to be removed. Emails are delivered through
+          Amazon Simple Email Service (Amazon Web Services, US East region).
+        </p>
       </Section>
 
       <Section title="8. Changes to This Policy">

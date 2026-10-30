@@ -58,6 +58,8 @@ export const metadata: Metadata = {
     },
   },
   alternates: alternates("/"),
+  // Search Console ownership for the Dilinx service account (added 30 Oct 2026).
+  verification: { google: "Qvbnurig16cXPYTShFcyu2856353dEX9LOcafJXqbos" },
 };
 
 export default function RootLayout({

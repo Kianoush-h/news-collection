@@ -1,9 +1,10 @@
 import { articles } from "@/lib/articles";
 import { articleMarkdown } from "@/lib/articles-markdown";
+import { briefMarkdown, listBriefs } from "@/lib/brief";
 
 const baseUrl = "https://crisiswatch.ca";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const out: string[] = [];
@@ -22,6 +23,19 @@ export async function GET() {
   out.push("");
   out.push("---");
   out.push("");
+
+  const briefs = listBriefs().slice(0, 30);
+  if (briefs.length) {
+    out.push(`# Daily briefs (most recent ${briefs.length})`);
+    out.push("");
+    out.push(`> One brief per day, generated at 06:00 America/Toronto from the previous 24 hours of headlines and the live market figures. Index: ${baseUrl}/brief`);
+    out.push("");
+    for (const b of briefs) {
+      out.push(briefMarkdown(b));
+      out.push("---");
+      out.push("");
+    }
+  }
 
   for (const a of articles) {
     const md = articleMarkdown[a.slug];
