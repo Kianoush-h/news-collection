@@ -6,7 +6,7 @@ import { listBriefs } from "@/lib/brief";
 export const dynamic = "force-dynamic";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://crisiswatch.ca";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.crisiswatch.ca";
   const now = new Date();
 
   const dashboards: MetadataRoute.Sitemap = [

@@ -9,7 +9,7 @@ import path from "path";
  *
  * Google does not take IndexNow; it gets the sitemap through Search Console.
  */
-const HOST = "crisiswatch.ca";
+const HOST = "www.crisiswatch.ca";
 
 function readKey(): string | null {
   try {

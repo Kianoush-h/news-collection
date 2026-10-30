@@ -2,7 +2,7 @@ import { articles } from "@/lib/articles";
 import { articleMarkdown } from "@/lib/articles-markdown";
 import { briefMarkdown, listBriefs } from "@/lib/brief";
 
-const baseUrl = "https://crisiswatch.ca";
+const baseUrl = "https://www.crisiswatch.ca";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +12,7 @@ export async function GET() {
   out.push(`# Crisis Watch — Full Article Corpus`);
   out.push("");
   out.push(
-    `> Full plain-text content of every evergreen explainer published on Crisis Watch (https://crisiswatch.ca). Live dashboards are not inlined here because their figures change minute-to-minute — visit the URLs in /llms.txt for current values.`,
+    `> Full plain-text content of every evergreen explainer published on Crisis Watch (https://www.crisiswatch.ca). Live dashboards are not inlined here because their figures change minute-to-minute — visit the URLs in /llms.txt for current values.`,
   );
   out.push("");
   out.push(`Site: ${baseUrl}`);

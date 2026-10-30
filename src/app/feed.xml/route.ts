@@ -4,7 +4,7 @@ import { listBriefs } from "@/lib/brief";
 
 export const dynamic = "force-dynamic";
 
-const baseUrl = "https://crisiswatch.ca";
+const baseUrl = "https://www.crisiswatch.ca";
 
 interface BlogPost {
   id: string;

@@ -79,7 +79,7 @@ export default function ShareButton({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mounted = useIsClient();
 
-  const shareUrl = url || "https://crisiswatch.ca" + (typeof window !== "undefined" ? window.location.pathname : "");
+  const shareUrl = url || "https://www.crisiswatch.ca" + (typeof window !== "undefined" ? window.location.pathname : "");
   const shareText = text || title;
 
   // Position the dropdown when opened
@@ -177,7 +177,7 @@ export default function ShareButton({
 
 /** Inline share row — compact row of platform icons */
 export function ShareRow({ title, url, className = "" }: { title: string; url?: string; className?: string }) {
-  const shareUrl = url || "https://crisiswatch.ca" + (typeof window !== "undefined" ? window.location.pathname : "");
+  const shareUrl = url || "https://www.crisiswatch.ca" + (typeof window !== "undefined" ? window.location.pathname : "");
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>

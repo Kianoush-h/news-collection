@@ -1,7 +1,7 @@
 import { articles } from "@/lib/articles";
 import { listBriefs } from "@/lib/brief";
 
-const baseUrl = "https://crisiswatch.ca";
+const baseUrl = "https://www.crisiswatch.ca";
 
 // The brief list grows daily, so this is rendered per request (cached 1 h).
 export const dynamic = "force-dynamic";

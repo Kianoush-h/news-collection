@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const SITE_URL = "https://crisiswatch.ca";
+export const SITE_URL = "https://www.crisiswatch.ca";
 
 /**
  * Build the per-route alternates block. Re-declares the RSS alternate type

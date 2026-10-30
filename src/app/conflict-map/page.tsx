@@ -33,7 +33,7 @@ const conflictEventJsonLd = {
     "@type": "Thing",
     name: "Iran-US conflict, Strait of Hormuz blockade, oil supply disruption",
   },
-  url: "https://crisiswatch.ca/conflict-map",
+  url: "https://www.crisiswatch.ca/conflict-map",
 };
 
 const ConflictMapView = dynamic(() => import("@/components/ConflictMapView"), {

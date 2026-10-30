@@ -15,7 +15,7 @@ interface BreadcrumbsProps {
  * (current page) and is also the canonical leaf for Google.
  */
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
-  const base = "https://crisiswatch.ca";
+  const base = "https://www.crisiswatch.ca";
   const allItems: BreadcrumbItem[] = [{ name: "Home", href: "/" }, ...items];
 
   const jsonLd = {

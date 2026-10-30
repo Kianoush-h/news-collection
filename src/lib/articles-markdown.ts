@@ -36,9 +36,9 @@ The Strait of Hormuz is unique because there is no substitute for it at scale, n
 
 ## Related live data
 
-- Strait of Hormuz tracker: https://crisiswatch.ca/hormuz
-- Oil & Energy dashboard: https://crisiswatch.ca/oil-energy
-- Conflict timeline: https://crisiswatch.ca/conflict-map
+- Strait of Hormuz tracker: https://www.crisiswatch.ca/hormuz
+- Oil & Energy dashboard: https://www.crisiswatch.ca/oil-energy
+- Conflict timeline: https://www.crisiswatch.ca/conflict-map
 `,
 
   "how-iran-us-war-affects-gas-prices": `When the Strait of Hormuz closes or even looks like it might, the chain reaction at your local gas station is faster than most people expect. This article walks through how a Persian Gulf event turns into a higher number on the pump display — and why some states feel it more than others.
@@ -84,9 +84,9 @@ Gas prices during a Persian Gulf conflict are a downstream product of three thin
 
 ## Related live data
 
-- War Impact dashboard (gas prices by state): https://crisiswatch.ca/impact
-- Oil & Energy dashboard (Brent + RBOB futures): https://crisiswatch.ca/oil-energy
-- Strait of Hormuz tracker: https://crisiswatch.ca/hormuz
+- War Impact dashboard (gas prices by state): https://www.crisiswatch.ca/impact
+- Oil & Energy dashboard (Brent + RBOB futures): https://www.crisiswatch.ca/oil-energy
+- Strait of Hormuz tracker: https://www.crisiswatch.ca/hormuz
 `,
 
   "world-oil-percentage-strait-of-hormuz": `**Short answer:** roughly 20% of global oil consumption and about 30% of seaborne liquefied natural gas pass through the Strait of Hormuz on a typical day. The rest of this article breaks that figure down — by exporter, by destination, and by what pipelines can actually replace if the Strait closes.
@@ -139,7 +139,7 @@ If you need a single sentence: "Roughly one out of every five barrels of oil con
 
 ## Related live data
 
-- Strait of Hormuz tracker: https://crisiswatch.ca/hormuz
-- Oil & Energy dashboard: https://crisiswatch.ca/oil-energy
+- Strait of Hormuz tracker: https://www.crisiswatch.ca/hormuz
+- Oil & Energy dashboard: https://www.crisiswatch.ca/oil-energy
 `,
 };

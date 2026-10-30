@@ -19,7 +19,7 @@ const homeDescription =
   "Live dashboard tracking the Iran-US conflict in real time. Oil prices, Strait of Hormuz status, gas prices, and the daily-life impact, updated continuously.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://crisiswatch.ca"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.crisiswatch.ca"),
   title: {
     default: homeTitle,
     template: "%s | Crisis Watch",
@@ -105,8 +105,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "Crisis Watch",
-              url: "https://crisiswatch.ca",
-              logo: "https://crisiswatch.ca/icon",
+              url: "https://www.crisiswatch.ca",
+              logo: "https://www.crisiswatch.ca/icon",
               email: "contact@crisiswatch.ca",
               description:
                 "Real-time conflict and crisis dashboard aggregating data from Reuters, AP, GDELT, Al Jazeera, Yahoo Finance, and MarineTraffic.",
@@ -121,7 +121,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "Crisis Watch",
-              url: "https://crisiswatch.ca",
+              url: "https://www.crisiswatch.ca",
               description:
                 "Live Iran-US conflict dashboard with real-time data on oil prices, Strait of Hormuz, gas prices, war timeline, and global impact.",
               publisher: { "@type": "Organization", name: "Crisis Watch" },
@@ -129,7 +129,7 @@ export default function RootLayout({
                 "@type": "SearchAction",
                 target: {
                   "@type": "EntryPoint",
-                  urlTemplate: "https://crisiswatch.ca/blog?q={search_term_string}",
+                  urlTemplate: "https://www.crisiswatch.ca/blog?q={search_term_string}",
                 },
                 "query-input": "required name=search_term_string",
               },
@@ -167,13 +167,13 @@ export default function RootLayout({
               "@type": "ItemList",
               name: "Crisis Watch Site Navigation",
               itemListElement: [
-                { "@type": "SiteNavigationElement", position: 1, name: "Overview", url: "https://crisiswatch.ca/" },
-                { "@type": "SiteNavigationElement", position: 2, name: "Strait of Hormuz", url: "https://crisiswatch.ca/hormuz" },
-                { "@type": "SiteNavigationElement", position: 3, name: "War Impact", url: "https://crisiswatch.ca/impact" },
-                { "@type": "SiteNavigationElement", position: 4, name: "Conflict Map", url: "https://crisiswatch.ca/conflict-map" },
-                { "@type": "SiteNavigationElement", position: 5, name: "Oil & Energy", url: "https://crisiswatch.ca/oil-energy" },
-                { "@type": "SiteNavigationElement", position: 6, name: "Live Blog", url: "https://crisiswatch.ca/blog" },
-                { "@type": "SiteNavigationElement", position: 7, name: "About", url: "https://crisiswatch.ca/about" },
+                { "@type": "SiteNavigationElement", position: 1, name: "Overview", url: "https://www.crisiswatch.ca/" },
+                { "@type": "SiteNavigationElement", position: 2, name: "Strait of Hormuz", url: "https://www.crisiswatch.ca/hormuz" },
+                { "@type": "SiteNavigationElement", position: 3, name: "War Impact", url: "https://www.crisiswatch.ca/impact" },
+                { "@type": "SiteNavigationElement", position: 4, name: "Conflict Map", url: "https://www.crisiswatch.ca/conflict-map" },
+                { "@type": "SiteNavigationElement", position: 5, name: "Oil & Energy", url: "https://www.crisiswatch.ca/oil-energy" },
+                { "@type": "SiteNavigationElement", position: 6, name: "Live Blog", url: "https://www.crisiswatch.ca/blog" },
+                { "@type": "SiteNavigationElement", position: 7, name: "About", url: "https://www.crisiswatch.ca/about" },
               ],
             }).replace(/</g, "\\u003c"),
           }}

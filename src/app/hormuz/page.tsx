@@ -24,7 +24,7 @@ const hormuzPlaceJsonLd = {
     "@type": "Place",
     name: "Persian Gulf",
   },
-  url: "https://crisiswatch.ca/hormuz",
+  url: "https://www.crisiswatch.ca/hormuz",
 };
 
 interface MetaData {

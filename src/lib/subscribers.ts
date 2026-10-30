@@ -7,22 +7,30 @@ import crypto from "crypto";
  * the cache. A few hundred rows in a JSON file is the right size for this;
  * a database would be more moving parts than the list justifies.
  *
- * Consent is explicit (a checkbox on the form) and every email carries a
- * one-click unsubscribe link keyed by the row token, as CASL requires.
+ * Double opt-in: a row starts unconfirmed and only receives the brief after
+ * the address clicks the link in the confirmation email, so nobody can put
+ * someone else on the list. Every email carries a one-click unsubscribe
+ * link keyed by the row token, as CASL requires. Unconfirmed rows older
+ * than a week are dropped.
  */
 const FILE = path.join(process.cwd(), ".data", "subscribers.json");
+const PENDING_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export interface Subscriber {
   email: string;
   token: string;
   createdAt: string;
   source: string;
+  confirmed: boolean;
+  confirmedAt?: string;
 }
 
 function readAll(): Subscriber[] {
   try {
     if (!fs.existsSync(FILE)) return [];
-    return JSON.parse(fs.readFileSync(FILE, "utf-8")) as Subscriber[];
+    const rows = JSON.parse(fs.readFileSync(FILE, "utf-8")) as Subscriber[];
+    const cutoff = Date.now() - PENDING_TTL_MS;
+    return rows.filter((r) => r.confirmed || new Date(r.createdAt).getTime() > cutoff);
   } catch {
     return [];
   }
@@ -35,30 +43,56 @@ function writeAll(rows: Subscriber[]): void {
   fs.renameSync(tmp, FILE);
 }
 
+/** Confirmed addresses only: the ones the brief goes to. */
 export function listSubscribers(): Subscriber[] {
-  return readAll();
+  return readAll().filter((r) => r.confirmed);
 }
 
 export function subscriberCount(): number {
-  return readAll().length;
+  return listSubscribers().length;
 }
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Strict on purpose: a plain mailbox@domain.tld with no quoting, brackets or
+// control characters, so the address is safe to echo back on a page.
+const EMAIL = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/;
 
-/** Adds the address; returns false when it was already there. */
-export function addSubscriber(email: string, source: string): boolean {
+export function isValidEmail(email: string): boolean {
+  return EMAIL.test(email) && email.length <= 254;
+}
+
+/**
+ * Adds or re-finds the address. Returns the row and whether it is already
+ * confirmed, so the caller knows whether to send a confirmation email.
+ */
+export function addSubscriber(email: string, source: string): { row: Subscriber; existed: boolean } {
   const e = email.trim().toLowerCase();
-  if (!EMAIL.test(e) || e.length > 254) throw new Error("invalid email");
+  if (!isValidEmail(e)) throw new Error("invalid email");
   const rows = readAll();
-  if (rows.some((r) => r.email === e)) return false;
-  rows.push({
+  const hit = rows.find((r) => r.email === e);
+  if (hit) return { row: hit, existed: true };
+  const row: Subscriber = {
     email: e,
     token: crypto.randomBytes(16).toString("hex"),
     createdAt: new Date().toISOString(),
     source,
-  });
+    confirmed: false,
+  };
+  rows.push(row);
   writeAll(rows);
-  return true;
+  return { row, existed: false };
+}
+
+/** Marks the row confirmed; returns the email, or null for an unknown token. */
+export function confirmSubscriber(token: string): string | null {
+  const rows = readAll();
+  const hit = rows.find((r) => r.token === token);
+  if (!hit) return null;
+  if (!hit.confirmed) {
+    hit.confirmed = true;
+    hit.confirmedAt = new Date().toISOString();
+    writeAll(rows);
+  }
+  return hit.email;
 }
 
 /** Removes by token; returns the email that was removed, or null. */

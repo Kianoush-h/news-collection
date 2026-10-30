@@ -50,7 +50,7 @@ export interface Brief {
 const DIR = path.join(process.cwd(), ".data", "briefs");
 const TZ = "America/Toronto";
 const PUBLISH_HOUR = 6;
-const SITE = "https://crisiswatch.ca";
+const SITE = "https://www.crisiswatch.ca";
 const FAL_URL = "https://fal.run/fal-ai/any-llm";
 const MODEL = "google/gemini-2.5-flash";
 

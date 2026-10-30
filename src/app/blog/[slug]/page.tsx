@@ -51,7 +51,7 @@ export default async function ArticlePage({ params }: PageProps) {
   const article = getArticle(slug);
   if (!article) notFound();
 
-  const url = `https://crisiswatch.ca/blog/${article.slug}`;
+  const url = `https://www.crisiswatch.ca/blog/${article.slug}`;
 
   const newsArticleJsonLd = {
     "@context": "https://schema.org",
@@ -63,14 +63,14 @@ export default async function ArticlePage({ params }: PageProps) {
     author: {
       "@type": "Organization",
       name: "Crisis Watch Editorial Team",
-      url: "https://crisiswatch.ca/about",
+      url: "https://www.crisiswatch.ca/about",
     },
     publisher: {
       "@type": "Organization",
       name: "Crisis Watch",
       logo: {
         "@type": "ImageObject",
-        url: "https://crisiswatch.ca/icon",
+        url: "https://www.crisiswatch.ca/icon",
       },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },

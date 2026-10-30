@@ -32,18 +32,18 @@ const aboutPageJsonLd = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
   name: "About Crisis Watch",
-  url: "https://crisiswatch.ca/about",
+  url: "https://www.crisiswatch.ca/about",
   description:
     "How Crisis Watch tracks the Iran-US conflict in real time. Data sources, refresh cadence, methodology, editorial policy, and contact information.",
   publisher: {
     "@type": "Organization",
-    "@id": "https://crisiswatch.ca/#organization",
+    "@id": "https://www.crisiswatch.ca/#organization",
     name: "Crisis Watch",
-    url: "https://crisiswatch.ca",
+    url: "https://www.crisiswatch.ca",
     email: "contact@crisiswatch.ca",
     logo: {
       "@type": "ImageObject",
-      url: "https://crisiswatch.ca/icon",
+      url: "https://www.crisiswatch.ca/icon",
     },
     member: editorialTeam.map((m) => ({
       "@type": "Role",

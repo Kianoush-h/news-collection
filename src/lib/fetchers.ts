@@ -258,7 +258,7 @@ export async function fetchNews() {
       const res = await fetch(url, {
         signal: controller.signal,
         headers: {
-          "User-Agent": "CrisisWatch/1.0 (https://crisiswatch.ca)",
+          "User-Agent": "CrisisWatch/1.0 (https://www.crisiswatch.ca)",
           "Accept": "application/json",
         },
       });
