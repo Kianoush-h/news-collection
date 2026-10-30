@@ -67,8 +67,8 @@ const navItems = [
     href: "/brief",
     label: "Daily Brief",
     icon: IconBlog,
-    description: "Auto-updating articles",
-    gradient: "from-purple-500 to-pink-400",
+    description: "One article every morning",
+    gradient: "from-red-500 to-orange-400",
   },
   {
     href: "/about",
