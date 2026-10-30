@@ -28,14 +28,10 @@ export default function SubscribeBox({ source = "site", compact = false }: { sou
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, consent: true, source }),
       });
-      const data = (await res.json()) as { ok?: boolean; confirmed?: boolean; pending?: boolean; error?: string };
+      const data = (await res.json()) as { ok?: boolean; error?: string };
       if (res.ok && data.ok) {
-        setState(data.confirmed ? "dup" : "done");
-        setMsg(
-          data.confirmed
-            ? "You are already on the list."
-            : "Almost done: we sent a confirmation link to that address. Click it and the next brief lands around 6 am Eastern.",
-        );
+        setState("done");
+        setMsg("Check your inbox: if that address is not on the list yet, a confirmation link is on its way. Click it and the next brief lands around 6 am Eastern.");
         setEmail("");
       } else {
         setState("error");

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addSubscriber } from "@/lib/subscribers";
+import { addSubscriber, markConfirmationSent } from "@/lib/subscribers";
 import { sendConfirmation } from "@/lib/mail";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,11 @@ function throttled(ip: string): boolean {
   const now = Date.now();
   if (hits.size > MAX_KEYS) {
     for (const [k, v] of hits) if (now - v.t > WINDOW_MS) hits.delete(k);
-    if (hits.size > MAX_KEYS) hits.clear();
+    // Still full: drop the oldest entries, never the whole table.
+    if (hits.size > MAX_KEYS) {
+      const oldest = [...hits.entries()].sort((a, b) => a[1].t - b[1].t).slice(0, hits.size - MAX_KEYS);
+      for (const [k] of oldest) hits.delete(k);
+    }
   }
   const h = hits.get(ip);
   if (!h || now - h.t > WINDOW_MS) {
@@ -55,19 +59,19 @@ export async function POST(req: NextRequest) {
   if (!body.consent) return NextResponse.json({ error: "Consent is required." }, { status: 400 });
 
   let row;
-  let existed;
   try {
-    ({ row, existed } = addSubscriber(String(body.email ?? ""), String(body.source ?? "site").slice(0, 40)));
+    ({ row } = addSubscriber(String(body.email ?? ""), String(body.source ?? "site").slice(0, 40)));
   } catch {
     return NextResponse.json({ error: "That does not look like an email address." }, { status: 400 });
   }
 
-  if (row.confirmed) return NextResponse.json({ ok: true, confirmed: true });
-
-  // New or still-unconfirmed: (re)send the confirmation link. The response
-  // is the same either way so the endpoint does not reveal who is on the list.
-  sendConfirmation(row.email, row.token).catch((e) =>
-    console.error("[Subscribe] confirmation mail failed:", e instanceof Error ? e.message : e),
-  );
-  return NextResponse.json({ ok: true, pending: true, resent: existed });
+  // One answer for every valid address, whether it is new, pending or already
+  // confirmed, so the endpoint cannot be used to find out who subscribes.
+  // A confirmation goes out only when the per-address cooldown allows it.
+  if (!row.confirmed && markConfirmationSent(row.token)) {
+    sendConfirmation(row.email, row.token).catch((e) =>
+      console.error("[Subscribe] confirmation mail failed:", e instanceof Error ? e.message : e),
+    );
+  }
+  return NextResponse.json({ ok: true });
 }

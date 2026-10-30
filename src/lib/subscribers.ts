@@ -23,7 +23,13 @@ export interface Subscriber {
   source: string;
   confirmed: boolean;
   confirmedAt?: string;
+  /** When the last confirmation email went out, and how many have. */
+  confirmSentAt?: string;
+  confirmSends?: number;
 }
+
+const CONFIRM_COOLDOWN_MS = 10 * 60 * 1000;
+const CONFIRM_MAX_SENDS = 4;
 
 function readAll(): Subscriber[] {
   try {
@@ -80,6 +86,24 @@ export function addSubscriber(email: string, source: string): { row: Subscriber;
   rows.push(row);
   writeAll(rows);
   return { row, existed: false };
+}
+
+/**
+ * Records that a confirmation email is about to go to this row, or says no:
+ * at most one every ten minutes and four in total, so a stranger typing
+ * someone else's address cannot flood that inbox.
+ */
+export function markConfirmationSent(token: string): boolean {
+  const rows = readAll();
+  const hit = rows.find((r) => r.token === token);
+  if (!hit || hit.confirmed) return false;
+  const sends = hit.confirmSends ?? 0;
+  if (sends >= CONFIRM_MAX_SENDS) return false;
+  if (hit.confirmSentAt && Date.now() - new Date(hit.confirmSentAt).getTime() < CONFIRM_COOLDOWN_MS) return false;
+  hit.confirmSentAt = new Date().toISOString();
+  hit.confirmSends = sends + 1;
+  writeAll(rows);
+  return true;
 }
 
 /** Marks the row confirmed; returns the email, or null for an unknown token. */
