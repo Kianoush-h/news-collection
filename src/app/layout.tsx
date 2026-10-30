@@ -71,7 +71,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* Google tag (gtag.js) — analytics blocked until the user accepts via the consent banner */}
+        {/* Google tag (gtag.js) — analytics blocked until the user accepts via the consent banner.
+            Two properties: the original one and the Dilinx account's "Crisis Watch" (G-5YLL728Z6Y). */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQPH98DCQ5" />
         <script
           dangerouslySetInnerHTML={{
@@ -86,6 +87,7 @@ export default function RootLayout({
   });
   gtag('js', new Date());
   gtag('config', 'G-SQPH98DCQ5');
+  gtag('config', 'G-5YLL728Z6Y');
 `,
           }}
         />
